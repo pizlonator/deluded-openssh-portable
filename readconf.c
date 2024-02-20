@@ -2488,7 +2488,7 @@ config_has_permitted_cnames(Options *options)
 void
 initialize_options(Options * options)
 {
-	memset(options, 'X', sizeof(*options));
+	memset(options, 0, sizeof(*options));
 	options->host_arg = NULL;
 	options->forward_agent = -1;
 	options->forward_agent_sock_path = NULL;
