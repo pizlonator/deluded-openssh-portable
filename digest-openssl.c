@@ -116,7 +116,7 @@ ssh_digest_start(int alg)
 	const struct ssh_digest *digest = ssh_digest_by_alg(alg);
 	struct ssh_digest_ctx *ret;
 
-	if (digest == NULL || ((ret = calloc(1, sizeof(*ret))) == NULL))
+	if (digest == NULL || ((ret = zalloc(typeof(*ret), 1)) == NULL))
 		return NULL;
 	ret->alg = alg;
 	if ((ret->mdctx = EVP_MD_CTX_new()) == NULL) {

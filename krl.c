@@ -134,7 +134,7 @@ ssh_krl_init(void)
 {
 	struct ssh_krl *krl;
 
-	if ((krl = calloc(1, sizeof(*krl))) == NULL)
+	if ((krl = zalloc(typeof(*krl), 1)) == NULL)
 		return NULL;
 	RB_INIT(&krl->revoked_keys);
 	RB_INIT(&krl->revoked_sha1s);
@@ -230,7 +230,7 @@ revoked_certs_for_ca_key(struct ssh_krl *krl, const struct sshkey *ca_key,
 	if (!allow_create)
 		return 0;
 	/* If this CA doesn't exist in the list then add it now */
-	if ((rc = calloc(1, sizeof(*rc))) == NULL)
+	if ((rc = zalloc(typeof(*rc), 1)) == NULL)
 		return SSH_ERR_ALLOC_FAIL;
 	if (ca_key == NULL)
 		rc->ca_key = NULL;
@@ -349,7 +349,7 @@ ssh_krl_revoke_cert_by_key_id(struct ssh_krl *krl, const struct sshkey *ca_key,
 		return r;
 
 	KRL_DBG(("revoke %s", key_id));
-	if ((rki = calloc(1, sizeof(*rki))) == NULL ||
+	if ((rki = zalloc(typeof(*rki), 1)) == NULL ||
 	    (rki->key_id = strdup(key_id)) == NULL) {
 		free(rki);
 		return SSH_ERR_ALLOC_FAIL;
@@ -388,7 +388,7 @@ revoke_blob(struct revoked_blob_tree *rbt, u_char *blob, size_t len)
 {
 	struct revoked_blob *rb, *erb;
 
-	if ((rb = calloc(1, sizeof(*rb))) == NULL)
+	if ((rb = zalloc(typeof(*rb), 1)) == NULL)
 		return SSH_ERR_ALLOC_FAIL;
 	rb->blob = blob;
 	rb->len = len;

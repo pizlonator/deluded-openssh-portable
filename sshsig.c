@@ -640,7 +640,7 @@ sshsigopt_parse(const char *opts, const char *path, u_long linenum,
 	char *opt;
 	const char *errstr = NULL;
 
-	if ((ret = calloc(1, sizeof(*ret))) == NULL)
+	if ((ret = zalloc(typeof(*ret), 1)) == NULL)
 		return NULL;
 	if (opts == NULL || *opts == '\0')
 		return ret; /* Empty options yields empty options :) */

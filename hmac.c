@@ -46,7 +46,7 @@ ssh_hmac_start(int alg)
 {
 	struct ssh_hmac_ctx	*ret;
 
-	if ((ret = calloc(1, sizeof(*ret))) == NULL)
+	if ((ret = zalloc(typeof(*ret), 1)) == NULL)
 		return NULL;
 	ret->alg = alg;
 	if ((ret->ictx = ssh_digest_start(alg)) == NULL ||

@@ -247,7 +247,7 @@ sk_enroll(uint32_t alg, const uint8_t *challenge, size_t challenge_len,
 	*enroll_response = NULL;
 	if (check_options(options) != 0)
 		goto out; /* error already logged */
-	if ((response = calloc(1, sizeof(*response))) == NULL) {
+	if ((response = zalloc(typeof(*response), 1)) == NULL) {
 		skdebug(__func__, "calloc response failed");
 		goto out;
 	}
@@ -496,7 +496,7 @@ sk_sign(uint32_t alg, const uint8_t *data, size_t datalen,
 	*sign_response = NULL;
 	if (check_options(options) != 0)
 		goto out; /* error already logged */
-	if ((response = calloc(1, sizeof(*response))) == NULL) {
+	if ((response = zalloc(typeof(*response), 1)) == NULL) {
 		skdebug(__func__, "calloc response failed");
 		goto out;
 	}

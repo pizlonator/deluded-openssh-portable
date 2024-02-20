@@ -113,7 +113,7 @@ sshsk_open(const char *path)
 		error("No FIDO SecurityKeyProvider specified");
 		return NULL;
 	}
-	if ((ret = calloc(1, sizeof(*ret))) == NULL) {
+	if ((ret = zalloc(typeof(*ret), 1)) == NULL) {
 		error_f("calloc failed");
 		return NULL;
 	}
@@ -835,7 +835,7 @@ sshsk_load_resident(const char *provider_path, const char *device,
 		if ((r = sshsk_key_from_response(rks[i]->alg,
 		    rks[i]->application, sk_flags, &rks[i]->key, &key)) != 0)
 			goto out;
-		if ((srk = calloc(1, sizeof(*srk))) == NULL) {
+		if ((srk = zalloc(typeof(*srk), 1)) == NULL) {
 			error_f("calloc failed");
 			r = SSH_ERR_ALLOC_FAIL;
 			goto out;

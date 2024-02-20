@@ -232,8 +232,8 @@ ssh_alloc_session_state(void)
 	struct ssh *ssh = NULL;
 	struct session_state *state = NULL;
 
-	if ((ssh = calloc(1, sizeof(*ssh))) == NULL ||
-	    (state = calloc(1, sizeof(*state))) == NULL ||
+	if ((ssh = zalloc(typeof(*ssh), 1)) == NULL ||
+	    (state = zalloc(typeof(*state), 1)) == NULL ||
 	    (ssh->kex = kex_new()) == NULL ||
 	    (state->input = sshbuf_new()) == NULL ||
 	    (state->output = sshbuf_new()) == NULL ||
@@ -1270,7 +1270,7 @@ ssh_packet_send2(struct ssh *ssh)
 		if (need_rekey)
 			debug3_f("rekex triggered");
 		debug("enqueue packet: %u", type);
-		p = calloc(1, sizeof(*p));
+		p = zalloc(typeof(*p), 1);
 		if (p == NULL)
 			return SSH_ERR_ALLOC_FAIL;
 		p->type = type;
@@ -2348,7 +2348,7 @@ newkeys_from_blob(struct sshbuf *m, struct ssh *ssh, int mode)
 	size_t keylen, ivlen, maclen;
 	int r;
 
-	if ((newkey = calloc(1, sizeof(*newkey))) == NULL) {
+	if ((newkey = zalloc(typeof(*newkey), 1)) == NULL) {
 		r = SSH_ERR_ALLOC_FAIL;
 		goto out;
 	}

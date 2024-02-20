@@ -896,7 +896,7 @@ kex_new(void)
 {
 	struct kex *kex;
 
-	if ((kex = calloc(1, sizeof(*kex))) == NULL ||
+	if ((kex = zalloc(typeof(*kex), 1)) == NULL ||
 	    (kex->peer = sshbuf_new()) == NULL ||
 	    (kex->my = sshbuf_new()) == NULL ||
 	    (kex->client_version = sshbuf_new()) == NULL ||
@@ -1221,7 +1221,7 @@ kex_choose_conf(struct ssh *ssh, uint32_t seq)
 		goto out;
 	}
 	for (mode = 0; mode < MODE_MAX; mode++) {
-		if ((newkeys = calloc(1, sizeof(*newkeys))) == NULL) {
+		if ((newkeys = zalloc(typeof(*newkeys), 1)) == NULL) {
 			r = SSH_ERR_ALLOC_FAIL;
 			goto out;
 		}

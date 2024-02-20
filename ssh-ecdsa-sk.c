@@ -263,7 +263,7 @@ ssh_ecdsa_sk_verify(const struct sshkey *key,
 	/* fetch signature */
 	if ((b = sshbuf_from(sig, siglen)) == NULL)
 		return SSH_ERR_ALLOC_FAIL;
-	if ((details = calloc(1, sizeof(*details))) == NULL) {
+	if ((details = zalloc(typeof(*details), 1)) == NULL) {
 		ret = SSH_ERR_ALLOC_FAIL;
 		goto out;
 	}

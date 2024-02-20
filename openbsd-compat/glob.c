@@ -574,7 +574,7 @@ glob0(const Char *pattern, glob_t *pglob, struct glob_lim *limitp)
 			size_t n = pglob->gl_pathc - oldpathc;
 			size_t o = pglob->gl_offs + oldpathc;
 
-			if ((path_stat = calloc(n, sizeof(*path_stat))) == NULL)
+			if ((path_stat = zalloc(typeof(*path_stat), n)) == NULL)
 				return GLOB_NOSPACE;
 			for (i = 0; i < n; i++) {
 				path_stat[i].gps_path = pglob->gl_pathv[o + i];

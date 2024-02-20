@@ -394,7 +394,7 @@ parse_dns_response(const u_char *answer, int size)
 		return (NULL);
 
 	/* allocate memory for the response */
-	resp = calloc(1, sizeof(*resp));
+	resp = zalloc(typeof(*resp), 1);
 	if (resp == NULL)
 		return (NULL);
 

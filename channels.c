@@ -236,7 +236,7 @@ channel_init_channels(struct ssh *ssh)
 {
 	struct ssh_channels *sc;
 
-	if ((sc = calloc(1, sizeof(*sc))) == NULL)
+	if ((sc = zalloc(typeof(*sc), 1)) == NULL)
 		fatal_f("allocation failed");
 	sc->channels_alloc = 10;
 	sc->channels = xcalloc(sc->channels_alloc, sizeof(*sc->channels));
@@ -2497,8 +2497,8 @@ channel_handler_init(struct ssh_channels *sc)
 {
 	chan_fn **pre, **post;
 
-	if ((pre = calloc(SSH_CHANNEL_MAX_TYPE, sizeof(*pre))) == NULL ||
-	    (post = calloc(SSH_CHANNEL_MAX_TYPE, sizeof(*post))) == NULL)
+	if ((pre = zalloc(typeof(*pre), SSH_CHANNEL_MAX_TYPE)) == NULL ||
+	    (post = zalloc(typeof(*post), SSH_CHANNEL_MAX_TYPE)) == NULL)
 		fatal_f("allocation failed");
 
 	pre[SSH_CHANNEL_OPEN] =			&channel_pre_open;

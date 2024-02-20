@@ -43,7 +43,7 @@ chachapoly_new(const u_char *key, u_int keylen)
 
 	if (keylen != (32 + 32)) /* 2 x 256 bit keys */
 		return NULL;
-	if ((ctx = calloc(1, sizeof(*ctx))) == NULL)
+	if ((ctx = zalloc(typeof(*ctx), 1)) == NULL)
 		return NULL;
 	chacha_keysetup(&ctx->main_ctx, key, 256);
 	chacha_keysetup(&ctx->header_ctx, key + 32, 256);

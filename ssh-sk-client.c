@@ -437,7 +437,7 @@ sshsk_load_resident(const char *provider_path, const char *device,
 			error_fr(r, "decode key");
 			goto out;
 		}
-		if ((srk = calloc(1, sizeof(*srk))) == NULL) {
+		if ((srk = zalloc(typeof(*srk), 1)) == NULL) {
 			error_f("calloc failed");
 			goto out;
 		}

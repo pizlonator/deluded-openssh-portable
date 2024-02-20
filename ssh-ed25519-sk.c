@@ -194,7 +194,7 @@ ssh_ed25519_sk_verify(const struct sshkey *key,
 	fprintf(stderr, "%s: hashed message:\n", __func__);
 	sshbuf_dump_data(msghash, sizeof(msghash), stderr);
 #endif
-	if ((details = calloc(1, sizeof(*details))) == NULL) {
+	if ((details = zalloc(typeof(*details), 1)) == NULL) {
 		r = SSH_ERR_ALLOC_FAIL;
 		goto out;
 	}

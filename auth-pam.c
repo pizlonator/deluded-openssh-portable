@@ -412,7 +412,7 @@ sshpam_thread_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG)
 		return (PAM_CONV_ERR);
 
-	if ((reply = calloc(n, sizeof(*reply))) == NULL)
+	if ((reply = zalloc(typeof(*reply), n)) == NULL)
 		return PAM_CONV_ERR;
 	if ((buffer = sshbuf_new()) == NULL) {
 		free(reply);
@@ -635,7 +635,7 @@ sshpam_store_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG)
 		return (PAM_CONV_ERR);
 
-	if ((reply = calloc(n, sizeof(*reply))) == NULL)
+	if ((reply = zalloc(typeof(*reply), n)) == NULL)
 		return (PAM_CONV_ERR);
 
 	for (i = 0; i < n; ++i) {
@@ -1142,7 +1142,7 @@ sshpam_tty_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG || !isatty(STDIN_FILENO))
 		return (PAM_CONV_ERR);
 
-	if ((reply = calloc(n, sizeof(*reply))) == NULL)
+	if ((reply = zalloc(typeof(*reply), n)) == NULL)
 		return (PAM_CONV_ERR);
 
 	for (i = 0; i < n; ++i) {
@@ -1301,7 +1301,7 @@ sshpam_passwd_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG)
 		return (PAM_CONV_ERR);
 
-	if ((reply = calloc(n, sizeof(*reply))) == NULL)
+	if ((reply = zalloc(typeof(*reply), n)) == NULL)
 		return (PAM_CONV_ERR);
 
 	for (i = 0; i < n; ++i) {

@@ -45,7 +45,7 @@ chachapoly_new(const u_char *key, u_int keylen)
 
 	if (keylen != (32 + 32)) /* 2 x 256 bit keys */
 		return NULL;
-	if ((ctx = calloc(1, sizeof(*ctx))) == NULL)
+	if ((ctx = zalloc(typeof(*ctx), 1)) == NULL)
 		return NULL;
 	if ((ctx->main_evp = EVP_CIPHER_CTX_new()) == NULL ||
 	    (ctx->header_evp = EVP_CIPHER_CTX_new()) == NULL)

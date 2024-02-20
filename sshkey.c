@@ -586,7 +586,7 @@ cert_new(void)
 {
 	struct sshkey_cert *cert;
 
-	if ((cert = calloc(1, sizeof(*cert))) == NULL)
+	if ((cert = zalloc(typeof(*cert), 1)) == NULL)
 		return NULL;
 	if ((cert->certblob = sshbuf_new()) == NULL ||
 	    (cert->critical = sshbuf_new()) == NULL ||
@@ -612,7 +612,7 @@ sshkey_new(int type)
 		return NULL;
 
 	/* All non-certificate types may act as CAs */
-	if ((k = calloc(1, sizeof(*k))) == NULL)
+	if ((k = zalloc(typeof(*k), 1)) == NULL)
 		return NULL;
 	k->type = type;
 	k->ecdsa_nid = -1;

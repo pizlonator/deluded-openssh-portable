@@ -55,7 +55,7 @@ dup_strings(char ***dstp, size_t *ndstp, char **src, size_t nsrc)
 	if (nsrc == 0)
 		return 0;
 	if (nsrc >= SIZE_MAX / sizeof(*src) ||
-	    (dst = calloc(nsrc, sizeof(*src))) == NULL)
+	    (dst = zalloc(typeof(*src), nsrc)) == NULL)
 		return -1;
 	for (i = 0; i < nsrc; i++) {
 		if ((dst[i] = strdup(src[i])) == NULL) {
@@ -196,7 +196,7 @@ sshauthopt_new(void)
 {
 	struct sshauthopt *ret;
 
-	if ((ret = calloc(1, sizeof(*ret))) == NULL)
+	if ((ret = zalloc(typeof(*ret), 1)) == NULL)
 		return NULL;
 	ret->force_tun_device = -1;
 	return ret;
@@ -746,7 +746,7 @@ deserialise_array(struct sshbuf *m, char ***ap, size_t *np)
 		goto out;
 	}
 	n = tmp;
-	if (n > 0 && (a = calloc(n, sizeof(*a))) == NULL) {
+	if (n > 0 && (a = zalloc(typeof(*a), n)) == NULL) {
 		r = SSH_ERR_ALLOC_FAIL;
 		goto out;
 	}
@@ -854,7 +854,7 @@ sshauthopt_deserialise(struct sshbuf *m, struct sshauthopt **optsp)
 	u_char f;
 	u_int tmp;
 
-	if ((opts = calloc(1, sizeof(*opts))) == NULL)
+	if ((opts = zalloc(typeof(*opts), 1)) == NULL)
 		return SSH_ERR_ALLOC_FAIL;
 
 	/* Flag options */

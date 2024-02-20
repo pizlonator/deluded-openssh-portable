@@ -178,7 +178,7 @@ sk_open(const char *path)
 		skdebug(__func__, "path == NULL");
 		return NULL;
 	}
-	if ((sk = calloc(1, sizeof(*sk))) == NULL) {
+	if ((sk = zalloc(typeof(*sk), 1)) == NULL) {
 		skdebug(__func__, "calloc sk failed");
 		return NULL;
 	}
@@ -224,7 +224,7 @@ sk_openv(const fido_dev_info_t *devlist, size_t ndevs, size_t *nopen)
 	size_t i;
 
 	*nopen = 0;
-	if ((skv = calloc(ndevs, sizeof(*skv))) == NULL) {
+	if ((skv = zalloc(typeof(*skv), ndevs)) == NULL) {
 		skdebug(__func__, "calloc skv failed");
 		return NULL;
 	}
@@ -968,7 +968,7 @@ sk_enroll(uint32_t alg, const uint8_t *challenge, size_t challenge_len,
 			goto out;
 		}
 	}
-	if ((response = calloc(1, sizeof(*response))) == NULL) {
+	if ((response = zalloc(typeof(*response), 1)) == NULL) {
 		skdebug(__func__, "calloc response failed");
 		goto out;
 	}
@@ -1230,7 +1230,7 @@ sk_sign(uint32_t alg, const uint8_t *data, size_t datalen,
 		ret = fidoerr_to_skerr(r);
 		goto out;
 	}
-	if ((response = calloc(1, sizeof(*response))) == NULL) {
+	if ((response = zalloc(typeof(*response), 1)) == NULL) {
 		skdebug(__func__, "calloc response failed");
 		goto out;
 	}
@@ -1357,7 +1357,7 @@ read_rks(struct sk_usbhid *sk, const char *pin,
 			    fido_cred_flags(cred), fido_cred_prot(cred));
 
 			/* build response entry */
-			if ((srk = calloc(1, sizeof(*srk))) == NULL ||
+			if ((srk = zalloc(typeof(*srk), 1)) == NULL ||
 			    (srk->key.key_handle = calloc(1,
 			    fido_cred_id_len(cred))) == NULL ||
 			    (srk->application = strdup(rp_id)) == NULL ||
