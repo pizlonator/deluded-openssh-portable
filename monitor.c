@@ -1815,7 +1815,7 @@ monitor_init(void)
 {
 	struct monitor *mon;
 
-	mon = xcalloc(1, sizeof(*mon));
+	mon = zalloc(typeof(*mon), 1);
 	monitor_openfds(mon, 1);
 
 	return mon;

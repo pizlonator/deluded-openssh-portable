@@ -884,7 +884,7 @@ void
 client_expect_confirm(struct ssh *ssh, int id, const char *request,
     enum confirm_action action)
 {
-	struct channel_reply_ctx *cr = xcalloc(1, sizeof(*cr));
+	struct channel_reply_ctx *cr = zalloc(typeof(*cr), 1);
 
 	cr->request_type = request;
 	cr->action = action;
@@ -907,7 +907,7 @@ client_register_global_confirm(global_confirm_cb *cb, void *ctx)
 		return;
 	}
 
-	gc = xcalloc(1, sizeof(*gc));
+	gc = zalloc(typeof(*gc), 1);
 	gc->cb = cb;
 	gc->ctx = ctx;
 	gc->ref_count = 1;
@@ -1402,7 +1402,7 @@ client_new_escape_filter_ctx(int escape_char)
 {
 	struct escape_filter_ctx *ret;
 
-	ret = xcalloc(1, sizeof(*ret));
+	ret = zalloc(typeof(*ret), 1);
 	ret->escape_pending = 0;
 	ret->escape_char = escape_char;
 	return (void *)ret;
@@ -2485,7 +2485,7 @@ client_input_hostkeys(struct ssh *ssh)
 		return 1;
 	hostkeys_seen = 1;
 
-	ctx = xcalloc(1, sizeof(*ctx));
+	ctx = zalloc(typeof(*ctx), 1);
 	while (ssh_packet_remaining(ssh) > 0) {
 		sshkey_free(key);
 		key = NULL;

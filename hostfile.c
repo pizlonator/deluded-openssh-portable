@@ -215,7 +215,7 @@ check_markers(char **cpp)
 struct hostkeys *
 init_hostkeys(void)
 {
-	struct hostkeys *ret = xcalloc(1, sizeof(*ret));
+	struct hostkeys *ret = zalloc(typeof(*ret), 1);
 
 	ret->entries = NULL;
 	return ret;

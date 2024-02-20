@@ -1025,7 +1025,7 @@ do_globbed_ls(struct sftp_conn *conn, const char *path,
 	 */
 	for (nentries = 0; g.gl_pathv[nentries] != NULL; nentries++)
 		;	/* count entries */
-	indices = xcalloc(nentries, sizeof(*indices));
+	indices = zalloc(typeof(*indices), nentries);
 	for (i = 0; i < nentries; i++)
 		indices[i] = i;
 

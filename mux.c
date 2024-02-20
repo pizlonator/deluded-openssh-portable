@@ -340,7 +340,7 @@ mux_master_process_new_session(struct ssh *ssh, u_int rid,
 	int r, new_fd[3];
 
 	/* Reply for SSHMUX_COMMAND_OPEN */
-	cctx = xcalloc(1, sizeof(*cctx));
+	cctx = zalloc(typeof(*cctx), 1);
 	cctx->term = NULL;
 	cctx->rid = rid;
 	cmd = NULL;
@@ -821,7 +821,7 @@ mux_master_process_open_fwd(struct ssh *ssh, u_int rid,
 		if (fwd.handle < 0)
 			goto fail;
 		add_remote_forward(&options, &fwd);
-		fctx = xcalloc(1, sizeof(*fctx));
+		fctx = zalloc(typeof(*fctx), 1);
 		fctx->cid = c->self;
 		fctx->rid = rid;
 		fctx->fid = options.num_remote_forwards - 1;
@@ -1043,7 +1043,7 @@ mux_master_process_stdio_fwd(struct ssh *ssh, u_int rid,
 	channel_register_cleanup(ssh, nc->self,
 	    mux_master_session_cleanup_cb, 1);
 
-	cctx = xcalloc(1, sizeof(*cctx));
+	cctx = zalloc(typeof(*cctx), 1);
 	cctx->rid = rid;
 	channel_register_open_confirm(ssh, nc->self, mux_stdio_confirm, cctx);
 	c->mux_pause = 1; /* stop handling messages until open_confirm done */
@@ -1159,7 +1159,7 @@ mux_master_read_cb(struct ssh *ssh, Channel *c)
 
 	/* Setup ctx and  */
 	if (c->mux_ctx == NULL) {
-		state = xcalloc(1, sizeof(*state));
+		state = zalloc(typeof(*state), 1);
 		c->mux_ctx = state;
 		channel_register_cleanup(ssh, c->self,
 		    mux_master_control_cleanup_cb, 0);

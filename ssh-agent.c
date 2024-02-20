@@ -218,7 +218,7 @@ close_socket(SocketEntry *e)
 static void
 idtab_init(void)
 {
-	idtab = xcalloc(1, sizeof(*idtab));
+	idtab = zalloc(typeof(*idtab), 1);
 	TAILQ_INIT(&idtab->idlist);
 	idtab->nentries = 0;
 }
@@ -282,7 +282,7 @@ dup_dest_constraints(const struct dest_constraint *dcs, size_t ndcs)
 
 	if (ndcs == 0)
 		return NULL;
-	ret = xcalloc(ndcs, sizeof(*ret));
+	ret = zalloc(typeof(*ret), ndcs);
 	for (i = 0; i < ndcs; i++) {
 		dup_dest_constraint_hop(&dcs[i].from, &ret[i].from);
 		dup_dest_constraint_hop(&dcs[i].to, &ret[i].to);

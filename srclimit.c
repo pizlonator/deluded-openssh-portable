@@ -54,7 +54,7 @@ srclimit_init(int max, int persource, int ipv4len, int ipv6len)
 	    max, persource, ipv4len, ipv6len);
 	if (max <= 0)
 		fatal("%s: invalid number of sockets: %d", __func__, max);
-	child = xcalloc(max_children, sizeof(*child));
+	child = zalloc(typeof(*child), max_children);
 	for (i = 0; i < max_children; i++)
 		child[i].id = -1;
 }

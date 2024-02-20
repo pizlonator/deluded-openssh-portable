@@ -61,14 +61,14 @@ ga_init(const char *user, gid_t base)
 	ngroups = MAX(NGROUPS_MAX, sysconf(_SC_NGROUPS_MAX));
 #endif
 
-	groups_bygid = xcalloc(ngroups, sizeof(*groups_bygid));
+	groups_bygid = zalloc(typeof(*groups_bygid), ngroups);
 	while (getgrouplist(user, base, groups_bygid, &ngroups) == -1) {
 		if (retry++ > 0)
 			fatal("getgrouplist: groups list too small");
 		groups_bygid = xreallocarray(groups_bygid, ngroups,
 		    sizeof(*groups_bygid));
 	}
-	groups_byname = xcalloc(ngroups, sizeof(*groups_byname));
+	groups_byname = zalloc(typeof(*groups_byname), ngroups);
 
 	for (i = 0, j = 0; i < ngroups; i++)
 		if ((gr = getgrgid(groups_bygid[i])) != NULL)

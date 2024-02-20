@@ -1119,7 +1119,7 @@ channel_register_status_confirm(struct ssh *ssh, int id,
 	if ((c = channel_lookup(ssh, id)) == NULL)
 		fatal_f("%d: bad id", id);
 
-	cc = xcalloc(1, sizeof(*cc));
+	cc = zalloc(typeof(*cc), 1);
 	cc->cb = cb;
 	cc->abandon_cb = abandon_cb;
 	cc->ctx = ctx;

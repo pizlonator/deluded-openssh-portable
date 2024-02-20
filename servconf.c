@@ -2185,7 +2185,7 @@ process_server_config_line_depth(ServerOptions *options, char *line,
 				 */
 				debug2("%s line %d: no match for %s",
 				    filename, linenum, arg);
-				item = xcalloc(1, sizeof(*item));
+				item = zalloc(typeof(*item), 1);
 				item->selector = strdup(arg);
 				TAILQ_INSERT_TAIL(includes,
 				    item, entry);
@@ -2195,7 +2195,7 @@ process_server_config_line_depth(ServerOptions *options, char *line,
 			for (n = 0; n < (int)gbuf.gl_pathc; n++) {
 				debug2("%s line %d: including %s",
 				    filename, linenum, gbuf.gl_pathv[n]);
-				item = xcalloc(1, sizeof(*item));
+				item = zalloc(typeof(*item), 1);
 				item->selector = strdup(arg);
 				item->filename = strdup(gbuf.gl_pathv[n]);
 				if ((item->contents = sshbuf_new()) == NULL)

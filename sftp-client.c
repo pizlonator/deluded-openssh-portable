@@ -129,7 +129,7 @@ request_enqueue(struct requests *requests, u_int id, size_t len,
 {
 	struct request *req;
 
-	req = xcalloc(1, sizeof(*req));
+	req = zalloc(typeof(*req), 1);
 	req->id = id;
 	req->len = len;
 	req->offset = offset;
@@ -461,7 +461,7 @@ sftp_init(int fd_in, int fd_out, u_int transfer_buflen, u_int num_requests,
 	struct sftp_conn *ret;
 	int r;
 
-	ret = xcalloc(1, sizeof(*ret));
+	ret = zalloc(typeof(*ret), 1);
 	ret->msg_id = 1;
 	ret->fd_in = fd_in;
 	ret->fd_out = fd_out;
@@ -2913,7 +2913,7 @@ sftp_get_users_groups_by_id(struct sftp_conn *conn,
 	    (r = sshbuf_froms(msg, &gidbuf)) != 0)
 		fatal_fr(r, "parse response");
 	if (nuids > 0) {
-		usernames = xcalloc(nuids, sizeof(*usernames));
+		usernames = zalloc(typeof(*usernames), nuids);
 		for (i = 0; i < nuids; i++) {
 			if ((r = sshbuf_get_cstring(uidbuf, &name, NULL)) != 0)
 				fatal_fr(r, "parse user name");
@@ -2926,7 +2926,7 @@ sftp_get_users_groups_by_id(struct sftp_conn *conn,
 		}
 	}
 	if (ngids > 0) {
-		groupnames = xcalloc(ngids, sizeof(*groupnames));
+		groupnames = zalloc(typeof(*groupnames), ngids);
 		for (i = 0; i < ngids; i++) {
 			if ((r = sshbuf_get_cstring(gidbuf, &name, NULL)) != 0)
 				fatal_fr(r, "parse user name");

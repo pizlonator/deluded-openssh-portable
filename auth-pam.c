@@ -355,7 +355,7 @@ import_environments(struct sshbuf *b)
 		fatal_f("received %u environment variables, expected <= 1024",
 		    num_env);
 	}
-	sshpam_env = xcalloc(num_env + 1, sizeof(*sshpam_env));
+	sshpam_env = zalloc(typeof(*sshpam_env), num_env + 1);
 	debug3("PAM: num env strings %u", num_env);
 	for(i = 0; i < num_env; i++) {
 		if ((r = sshbuf_get_cstring(b, &(sshpam_env[i]), NULL)) != 0)

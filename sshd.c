@@ -972,7 +972,7 @@ recv_rexec_state(int fd, struct sshbuf *conf)
 		fatal_fr(r, "sshbuf_put");
 
 	while (sshbuf_len(inc) != 0) {
-		item = xcalloc(1, sizeof(*item));
+		item = zalloc(typeof(*item), 1);
 		if ((item->contents = sshbuf_new()) == NULL)
 			fatal_f("sshbuf_new failed");
 		if ((r = sshbuf_get_cstring(inc, &item->selector, NULL)) != 0 ||
@@ -1569,7 +1569,7 @@ main(int ac, char **av)
 	/* Save argv. Duplicate so setproctitle emulation doesn't clobber it */
 	saved_argc = ac;
 	rexec_argc = ac;
-	saved_argv = xcalloc(ac + 1, sizeof(*saved_argv));
+	saved_argv = zalloc(typeof(*saved_argv), ac + 1);
 	for (i = 0; (int)i < ac; i++)
 		saved_argv[i] = xstrdup(av[i]);
 	saved_argv[i] = NULL;
@@ -2230,7 +2230,7 @@ main(int ac, char **av)
 	ssh_packet_set_nonblocking(ssh);
 
 	/* allocate authentication context */
-	authctxt = xcalloc(1, sizeof(*authctxt));
+	authctxt = zalloc(typeof(*authctxt), 1);
 	ssh->authctxt = authctxt;
 
 	authctxt->loginmsg = loginmsg;

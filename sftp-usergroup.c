@@ -66,7 +66,7 @@ idname_enter(struct idname_tree *tree, u_int id, const char *name)
 {
 	struct idname *idname;
 
-	if ((idname = xcalloc(1, sizeof(*idname))) == NULL)
+	if ((idname = zalloc(typeof(*idname), 1)) == NULL)
 		fatal_f("alloc");
 	idname->id = id;
 	idname->name = xstrdup(name);

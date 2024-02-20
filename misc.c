@@ -483,7 +483,7 @@ strdelimw(char **s)
 struct passwd *
 pwcopy(struct passwd *pw)
 {
-	struct passwd *copy = xcalloc(1, sizeof(*copy));
+	struct passwd *copy = zalloc(typeof(*copy), 1);
 
 	copy->pw_name = xstrdup(pw->pw_name);
 	copy->pw_passwd = xstrdup(pw->pw_passwd == NULL ? "*" : pw->pw_passwd);
@@ -2018,7 +2018,7 @@ argv_split(const char *s, int *argcp, char ***argvp, int terminate_on_comment)
 {
 	int r = SSH_ERR_INTERNAL_ERROR;
 	int argc = 0, quote, i, j;
-	char *arg, **argv = xcalloc(1, sizeof(*argv));
+	char *arg, **argv = zalloc(typeof(*argv), 1);
 
 	*argvp = NULL;
 	*argcp = 0;

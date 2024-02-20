@@ -47,7 +47,7 @@ ssh_sandbox_init(struct monitor *m)
 	struct ssh_sandbox *box;
 
 	debug3_f("preparing pledge sandbox");
-	box = xcalloc(1, sizeof(*box));
+	box = zalloc(typeof(*box), 1);
 	box->child_pid = 0;
 
 	return box;

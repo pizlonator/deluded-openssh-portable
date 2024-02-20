@@ -1704,7 +1704,7 @@ pubkey_prepare(struct ssh *ssh, Authctxt *authctxt)
 			continue;
 		}
 		options.identity_keys[i] = NULL;
-		id = xcalloc(1, sizeof(*id));
+		id = zalloc(typeof(*id), 1);
 		id->agent_fd = -1;
 		id->key = key;
 		id->filename = xstrdup(options.identity_files[i]);
@@ -1727,7 +1727,7 @@ pubkey_prepare(struct ssh *ssh, Authctxt *authctxt)
 			    options.identity_files[i]);
 			continue;
 		}
-		id = xcalloc(1, sizeof(*id));
+		id = zalloc(typeof(*id), 1);
 		id->agent_fd = -1;
 		id->key = key;
 		id->filename = xstrdup(options.certificate_files[i]);
@@ -1758,7 +1758,7 @@ pubkey_prepare(struct ssh *ssh, Authctxt *authctxt)
 				}
 			}
 			if (!found && !options.identities_only) {
-				id = xcalloc(1, sizeof(*id));
+				id = zalloc(typeof(*id), 1);
 				/* XXX "steals" key/comment from idlist */
 				id->key = idlist->keys[j];
 				id->filename = idlist->comments[j];

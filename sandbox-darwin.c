@@ -50,7 +50,7 @@ ssh_sandbox_init(struct monitor *monitor)
 	 * to return non-NULL to satisfy the API.
 	 */
 	debug3("%s: preparing Darwin sandbox", __func__);
-	box = xcalloc(1, sizeof(*box));
+	box = zalloc(typeof(*box), 1);
 	box->child_pid = 0;
 
 	return box;

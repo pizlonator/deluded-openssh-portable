@@ -485,7 +485,7 @@ main(int argc, char **argv)
 
 	/* Copy argv, because we modify it */
 	argv0 = argv[0];
-	newargv = xcalloc(MAXIMUM(argc + 1, 1), sizeof(*newargv));
+	newargv = zalloc(typeof(*newargv), MAXIMUM(argc + 1, 1));
 	for (n = 0; n < argc; n++)
 		newargv[n] = xstrdup(argv[n]);
 	argv = newargv;

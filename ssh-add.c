@@ -759,7 +759,7 @@ parse_dest_constraint(const char *s, struct dest_constraint ***dcp,
 	struct dest_constraint *dc;
 	char *os, *cp;
 
-	dc = xcalloc(1, sizeof(*dc));
+	dc = zalloc(typeof(*dc), 1);
 	os = xstrdup(s);
 	if ((cp = strchr(os, '>')) == NULL) {
 		/* initial hop; no 'from' hop specified */

@@ -491,7 +491,7 @@ pkcs11_rsa_wrap(struct pkcs11_provider *provider, CK_ULONG slotidx,
 	if (pkcs11_rsa_start_wrapper() == -1)
 		return (-1);
 
-	k11 = xcalloc(1, sizeof(*k11));
+	k11 = zalloc(typeof(*k11), 1);
 	k11->provider = provider;
 	provider->refcount++;	/* provider referenced by RSA key */
 	k11->slotidx = slotidx;
@@ -605,7 +605,7 @@ pkcs11_ecdsa_wrap(struct pkcs11_provider *provider, CK_ULONG slotidx,
 	if (pkcs11_ecdsa_start_wrapper() == -1)
 		return (-1);
 
-	k11 = xcalloc(1, sizeof(*k11));
+	k11 = zalloc(typeof(*k11), 1);
 	k11->provider = provider;
 	provider->refcount++;	/* provider referenced by ECDSA key */
 	k11->slotidx = slotidx;
@@ -1546,7 +1546,7 @@ pkcs11_register_provider(char *provider_id, char *pin,
 	}
 	if ((getfunctionlist = dlsym(handle, "C_GetFunctionList")) == NULL)
 		fatal("dlsym(C_GetFunctionList) failed: %s", dlerror());
-	p = xcalloc(1, sizeof(*p));
+	p = zalloc(typeof(*p), 1);
 	p->name = xstrdup(provider_id);
 	p->handle = handle;
 	/* setup the pkcs11 callbacks */

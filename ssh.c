@@ -696,7 +696,7 @@ main(int ac, char **av)
 #ifndef HAVE_SETPROCTITLE
 	/* Prepare for later setproctitle emulation */
 	/* Save argv so it isn't clobbered by setproctitle() emulation */
-	saved_av = xcalloc(ac + 1, sizeof(*saved_av));
+	saved_av = zalloc(typeof(*saved_av), ac + 1);
 	for (i = 0; i < ac; i++)
 		saved_av[i] = xstrdup(av[i]);
 	saved_av[i] = NULL;
@@ -1417,7 +1417,7 @@ main(int ac, char **av)
 	}
 
 	/* Set up strings used to percent_expand() arguments */
-	cinfo = xcalloc(1, sizeof(*cinfo));
+	cinfo = zalloc(typeof(*cinfo), 1);
 	if (gethostname(thishost, sizeof(thishost)) == -1)
 		fatal("gethostname: %s", strerror(errno));
 	cinfo->thishost = xstrdup(thishost);

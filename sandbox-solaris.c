@@ -47,7 +47,7 @@ ssh_sandbox_init(struct monitor *monitor)
 {
 	struct ssh_sandbox *box = NULL;
 
-	box = xcalloc(1, sizeof(*box));
+	box = zalloc(typeof(*box), 1);
 
 	/* Start with "basic" and drop everything we don't need. */
 	box->pset = solaris_basic_privset();

@@ -67,7 +67,7 @@ add_key(struct sshkey *k, char *name, char *label)
 {
 	struct pkcs11_keyinfo *ki;
 
-	ki = xcalloc(1, sizeof(*ki));
+	ki = zalloc(typeof(*ki), 1);
 	ki->providername = xstrdup(name);
 	ki->key = k;
 	ki->label = xstrdup(label);

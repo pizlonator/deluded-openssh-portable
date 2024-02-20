@@ -532,7 +532,7 @@ pkcs11_start_helper(const char *path)
 		error_f("socketpair: %s", strerror(errno));
 		return NULL;
 	}
-	helper = xcalloc(1, sizeof(*helper));
+	helper = zalloc(typeof(*helper), 1);
 	if (pkcs11_start_helper_methods(helper) == -1) {
 		error_f("pkcs11_start_helper_methods failed");
 		goto fail;
