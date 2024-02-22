@@ -740,21 +740,6 @@ case "$host" in
 *-*-darwin*)
 	use_pie=auto
 	AC_MSG_CHECKING([if we have working getaddrinfo])
-	AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <mach-o/dyld.h>
-#include <stdlib.h>
-int main(void) { if (NSVersionOfRunTimeLibrary("System") >= (60 << 16))
-		exit(0);
-	else
-		exit(1);
-}
-			]])],
-	[AC_MSG_RESULT([working])],
-	[AC_MSG_RESULT([buggy])
-	AC_DEFINE([BROKEN_GETADDRINFO], [1],
-		[getaddrinfo is broken (if present)])
-	],
-	[AC_MSG_RESULT([assume it is working])])
 	AC_DEFINE([SETEUID_BREAKS_SETUID])
 	AC_DEFINE([BROKEN_SETREUID])
 	AC_DEFINE([BROKEN_SETREGID])
@@ -1213,7 +1198,9 @@ mips-sony-bsd|mips-sony-newsos4)
 	AC_DEFINE([UNIXWARE_LONG_PASSWORDS], [1], [Support passwords > 8 chars])
 	AC_DEFINE([USE_PIPES])
 	AC_DEFINE([SETEUID_BREAKS_SETUID])
-	AC_DEFINE([BROKEN_GETADDRINFO])
+	AC_DEFINE([BROKEN_GETADDRINFO], [1],
+		[getaddrinfo is broken (if present)])
+	],
 	AC_DEFINE([BROKEN_SETREUID])
 	AC_DEFINE([BROKEN_SETREGID])
 	AC_DEFINE([PASSWD_NEEDS_USERNAME])
