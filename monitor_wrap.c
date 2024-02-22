@@ -284,7 +284,7 @@ mm_getpwnamallow(struct ssh *ssh, const char *username)
 	}
 
 	/* XXX don't like passing struct passwd like this */
-	pw = xcalloc(sizeof(*pw), 1);
+	pw = zalloc(typeof(*pw), 1);
 	GETPW(m, pw_uid);
 	GETPW(m, pw_gid);
 #ifdef HAVE_STRUCT_PASSWD_PW_CHANGE
@@ -311,7 +311,7 @@ out:
 		fatal_fr(r, "parse opts");
 	if (len != sizeof(*newopts))
 		fatal_f("option block size mismatch");
-	newopts = xcalloc(sizeof(*newopts), 1);
+	newopts = zalloc(typeof(*newopts), 1);
 	memcpy(newopts, p, sizeof(*newopts));
 
 #define M_CP_STROPT(x) do { \
