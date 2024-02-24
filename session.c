@@ -992,7 +992,7 @@ do_setup_env(struct ssh *ssh, Session *s, const char *shell)
 
 	/* Initialize the environment. */
 	envsize = 100;
-	env = xcalloc(envsize, sizeof(char *));
+	env = zalloc(char *, envsize);
 	env[0] = NULL;
 
 #ifdef HAVE_CYGWIN

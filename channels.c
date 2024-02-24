@@ -477,7 +477,7 @@ channel_new(struct ssh *ssh, char *ctype, int type, int rfd, int wfd, int efd,
 		debug2("channel: expanding %d", sc->channels_alloc);
 	}
 	/* Initialize and return new channel. */
-	c = sc->channels[found] = xcalloc(1, sizeof(Channel));
+	c = sc->channels[found] = zalloc(Channel, 1);
 	if ((c->input = sshbuf_new()) == NULL ||
 	    (c->output = sshbuf_new()) == NULL ||
 	    (c->extended = sshbuf_new()) == NULL)
@@ -5054,7 +5054,7 @@ x11_create_display_inet(struct ssh *ssh, int x11_display_offset,
 	}
 
 	/* Allocate a channel for each socket. */
-	*chanids = xcalloc(num_socks + 1, sizeof(**chanids));
+	*chanids = zalloc(typeof(**chanids), num_socks + 1);
 	for (n = 0; n < num_socks; n++) {
 		sock = socks[n];
 		nc = channel_new(ssh, "x11-listener",

@@ -1104,7 +1104,7 @@ mm_answer_pam_respond(struct ssh *ssh, int sock, struct sshbuf *m)
 		    num, (unsigned)PAM_MAX_NUM_MSG);
 	}
 	if (num > 0) {
-		resp = xcalloc(num, sizeof(char *));
+		resp = zalloc(char *, num);
 		for (i = 0; i < num; ++i) {
 			if ((r = sshbuf_get_cstring(m, &(resp[i]), NULL)) != 0)
 				fatal("%s: buffer error: %s",

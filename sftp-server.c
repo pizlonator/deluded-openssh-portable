@@ -1148,7 +1148,7 @@ process_readdir(u_int32_t id)
 		Stat *stats;
 		int nstats = 10, count = 0, i;
 
-		stats = xcalloc(nstats, sizeof(Stat));
+		stats = zalloc(Stat, nstats);
 		while ((dp = readdir(dirp)) != NULL) {
 			if (count >= nstats) {
 				nstats *= 2;

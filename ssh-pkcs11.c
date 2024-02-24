@@ -1585,14 +1585,14 @@ pkcs11_register_provider(char *provider_id, char *pin,
 		ret = -SSH_PKCS11_ERR_NO_SLOTS;
 		goto fail;
 	}
-	p->slotlist = xcalloc(p->nslots, sizeof(CK_SLOT_ID));
+	p->slotlist = zalloc(CK_SLOT_ID, p->nslots);
 	if ((rv = f->C_GetSlotList(CK_TRUE, p->slotlist, &p->nslots))
 	    != CKR_OK) {
 		error("C_GetSlotList for provider %s failed: %lu",
 		    provider_id, rv);
 		goto fail;
 	}
-	p->slotinfo = xcalloc(p->nslots, sizeof(struct pkcs11_slotinfo));
+	p->slotinfo = zalloc(struct pkcs11_slotinfo, p->nslots);
 	p->valid = 1;
 	nkeys = 0;
 	for (i = 0; i < p->nslots; i++) {

@@ -62,7 +62,7 @@ add_key(const char *privkey, const char *certpath)
 	int r;
 	struct sshkey *cert;
 
-	id = xcalloc(1, sizeof(Identity));
+	id = zalloc(Identity, 1);
 	TAILQ_INSERT_TAIL(&idtab->idlist, id, next);
 	idtab->nentries++;
 	id->key = privkey_or_die(privkey);
@@ -71,7 +71,7 @@ add_key(const char *privkey, const char *certpath)
 		id->sk_provider = xstrdup("internal");
 
 	/* Now the cert too */
-	id = xcalloc(1, sizeof(Identity));
+	id = zalloc(Identity, 1);
 	TAILQ_INSERT_TAIL(&idtab->idlist, id, next);
 	idtab->nentries++;
 	id->key = privkey_or_die(privkey);

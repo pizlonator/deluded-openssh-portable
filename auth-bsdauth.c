@@ -85,8 +85,8 @@ bsdauth_query(void *ctx, char **name, char **infotxt,
 	*name = xstrdup("");
 	*infotxt = xstrdup("");
 	*numprompts = 1;
-	*prompts = xcalloc(*numprompts, sizeof(char *));
-	*echo_on = xcalloc(*numprompts, sizeof(u_int));
+	*prompts = zalloc(char *, *numprompts);
+	*echo_on = zalloc(u_int, *numprompts);
 	(*prompts)[0] = xstrdup(challenge);
 
 	return 0;

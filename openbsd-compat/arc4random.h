@@ -75,9 +75,9 @@ _rs_allocate(struct _rs **rsp, struct _rsx **rsxp)
 		return (-1);
 	}
 #else
-	if ((*rsp = calloc(1, sizeof(**rsp))) == NULL)
+	if ((*rsp = zalloc(typeof(**rsp), 1)) == NULL)
 		return (-1);
-	if ((*rsxp = calloc(1, sizeof(**rsxp))) == NULL) {
+	if ((*rsxp = zalloc(typeof(**rsxp), 1)) == NULL) {
 		free(*rsp);
 		*rsp = NULL;
 		return (-1);

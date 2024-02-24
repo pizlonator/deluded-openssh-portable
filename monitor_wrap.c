@@ -536,7 +536,7 @@ mm_sshkey_verify(const struct sshkey *key, const u_char *sig, size_t siglen,
 		    (r = sshbuf_get_u8(m, &flags)) != 0)
 			fatal_fr(r, "parse sig_details");
 		if (sig_detailsp != NULL) {
-			*sig_detailsp = xcalloc(1, sizeof(**sig_detailsp));
+			*sig_detailsp = zalloc(typeof(**sig_detailsp), 1);
 			(*sig_detailsp)->sk_counter = counter;
 			(*sig_detailsp)->sk_flags = flags;
 		}
@@ -737,8 +737,8 @@ mm_sshpam_query(void *ctx, char **name, char **info,
 	if (*num > PAM_MAX_NUM_MSG)
 		fatal("%s: received %u PAM messages, expected <= %u",
 		    __func__, *num, PAM_MAX_NUM_MSG);
-	*prompts = xcalloc((*num + 1), sizeof(char *));
-	*echo_on = xcalloc((*num + 1), sizeof(u_int));
+	*prompts = zalloc(char *, (*num + 1));
+	*echo_on = zalloc(u_int, (*num + 1));
 	for (i = 0; i < *num; ++i) {
 		if ((r = sshbuf_get_cstring(m, &((*prompts)[i]), NULL)) != 0 ||
 		    (r = sshbuf_get_u32(m, &((*echo_on)[i]))) != 0)
@@ -812,8 +812,8 @@ mm_chall_setup(char **name, char **infotxt, u_int *numprompts,
 	*name = xstrdup("");
 	*infotxt = xstrdup("");
 	*numprompts = 1;
-	*prompts = xcalloc(*numprompts, sizeof(char *));
-	*echo_on = xcalloc(*numprompts, sizeof(u_int));
+	*prompts = zalloc(char *, *numprompts);
+	*echo_on = zalloc(u_int, *numprompts);
 	(*echo_on)[0] = 0;
 }
 

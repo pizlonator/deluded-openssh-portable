@@ -1403,7 +1403,7 @@ process_add_identity(SocketEntry *e)
 	if (lifetime && !death)
 		death = monotime() + lifetime;
 	if ((id = lookup_identity(k)) == NULL) {
-		id = xcalloc(1, sizeof(Identity));
+		id = zalloc(Identity, 1);
 		TAILQ_INSERT_TAIL(&idtab->idlist, id, next);
 		/* Increment the number of identities. */
 		idtab->nentries++;
@@ -1531,7 +1531,7 @@ add_p11_identity(struct sshkey *key, char *comment, const char *provider,
 		free(comment);
 		return;
 	}
-	id = xcalloc(1, sizeof(Identity));
+	id = zalloc(Identity, 1);
 	id->key = key;
 	id->comment = comment;
 	id->provider = xstrdup(provider);

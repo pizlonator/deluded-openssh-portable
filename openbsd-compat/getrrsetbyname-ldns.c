@@ -118,7 +118,7 @@ getrrsetbyname(const char *hostname, unsigned int rdclass,
 	}
 
 	/* initialize rrset */
-	rrset = calloc(1, sizeof(struct rrsetinfo));
+	rrset = zalloc(struct rrsetinfo, 1);
 	if (rrset == NULL) {
 		result = ERRSET_NOMEMORY;
 		goto fail;

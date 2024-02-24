@@ -77,7 +77,7 @@ ssh_gssapi_set_oid_data(Gssctxt *ctx, void *data, size_t len)
 		free(ctx->oid->elements);
 		free(ctx->oid);
 	}
-	ctx->oid = xcalloc(1, sizeof(gss_OID_desc));
+	ctx->oid = zalloc(gss_OID_desc, 1);
 	ctx->oid->length = len;
 	ctx->oid->elements = xmalloc(len);
 	memcpy(ctx->oid->elements, data, len);

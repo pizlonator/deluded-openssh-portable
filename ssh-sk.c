@@ -393,7 +393,7 @@ sshsk_add_option(struct sk_option ***optsp, size_t *noptsp,
 	}
 	*optsp = opts;
 	*noptsp = nopts + 1;
-	if ((opts[nopts] = calloc(1, sizeof(**opts))) == NULL) {
+	if ((opts[nopts] = zalloc(typeof(**opts), 1)) == NULL) {
 		error_f("alloc failed");
 		return SSH_ERR_ALLOC_FAIL;
 	}

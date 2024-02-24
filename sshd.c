@@ -1127,9 +1127,9 @@ server_accept_loop(int *sock_in, int *sock_out, int *newsock, int *config_s)
 	sigset_t nsigset, osigset;
 
 	/* pipes connected to unauthenticated child sshd processes */
-	startup_pipes = xcalloc(options.max_startups, sizeof(int));
-	startup_flags = xcalloc(options.max_startups, sizeof(int));
-	startup_pollfd = xcalloc(options.max_startups, sizeof(int));
+	startup_pipes = zalloc(int, options.max_startups);
+	startup_flags = zalloc(int, options.max_startups);
+	startup_pollfd = zalloc(int, options.max_startups);
 	for (i = 0; i < options.max_startups; i++)
 		startup_pipes[i] = -1;
 
@@ -2017,7 +2017,7 @@ main(int ac, char **av)
 	if (rexec_flag) {
 		if (rexec_argc < 0)
 			fatal("rexec_argc %d < 0", rexec_argc);
-		rexec_argv = xcalloc(rexec_argc + 2, sizeof(char *));
+		rexec_argv = zalloc(char *, rexec_argc + 2);
 		for (i = 0; i < (u_int)rexec_argc; i++) {
 			debug("rexec_argv[%d]='%s'", i, saved_argv[i]);
 			rexec_argv[i] = saved_argv[i];

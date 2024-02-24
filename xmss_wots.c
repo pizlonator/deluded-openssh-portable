@@ -121,7 +121,7 @@ int wots_sign(unsigned char *sig, const unsigned char *msg, const unsigned char 
   //int basew[params->len];
   int csum = 0;
   uint32_t i = 0;
-  int *basew = calloc(params->len, sizeof(int));
+  int *basew = zalloc(int, params->len);
   if (basew == NULL)
     return -1;
 
@@ -159,7 +159,7 @@ int wots_pkFromSig(unsigned char *pk, const unsigned char *sig, const unsigned c
 {
   int csum = 0;
   uint32_t i = 0;
-  int *basew = calloc(params->len, sizeof(int));
+  int *basew = zalloc(int, params->len);
   if (basew == NULL)
     return -1;
 

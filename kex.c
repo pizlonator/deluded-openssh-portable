@@ -431,7 +431,7 @@ kex_buf2prop(struct sshbuf *raw, int *first_kex_follows, char ***propp)
 	int r;
 
 	*propp = NULL;
-	if ((proposal = calloc(PROPOSAL_MAX, sizeof(char *))) == NULL)
+	if ((proposal = zalloc(char *, PROPOSAL_MAX)) == NULL)
 		return SSH_ERR_ALLOC_FAIL;
 	if ((b = sshbuf_fromb(raw)) == NULL) {
 		r = SSH_ERR_ALLOC_FAIL;

@@ -109,7 +109,7 @@ kbdint_alloc(const char *devs)
 		remove_kbdint_device("pam");
 #endif
 
-	kbdintctxt = xcalloc(1, sizeof(KbdintAuthctxt));
+	kbdintctxt = zalloc(KbdintAuthctxt, 1);
 	if (strcmp(devs, "") == 0) {
 		if ((b = sshbuf_new()) == NULL)
 			fatal_f("sshbuf_new failed");
@@ -313,7 +313,7 @@ input_userauth_info_response(int type, u_int32_t seq, struct ssh *ssh)
 	if (nresp > 100)
 		fatal_f("too many replies");
 	if (nresp > 0) {
-		response = xcalloc(nresp, sizeof(char *));
+		response = zalloc(char *, nresp);
 		for (i = 0; i < nresp; i++) {
 			if ((r = sshpkt_get_cstring(ssh, &response[i], NULL)) != 0)
 				fatal_fr(r, "parse response");

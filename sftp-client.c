@@ -732,7 +732,7 @@ sftp_lsreaddir(struct sftp_conn *conn, const char *path, int print_flag,
 
 	if (dir) {
 		ents = 0;
-		*dir = xcalloc(1, sizeof(**dir));
+		*dir = zalloc(typeof(**dir), 1);
 		(*dir)[0] = NULL;
 	}
 
@@ -811,7 +811,7 @@ sftp_lsreaddir(struct sftp_conn *conn, const char *path, int print_flag,
 				    "during readdir of \"%s\"", filename, path);
 			} else if (dir) {
 				*dir = xreallocarray(*dir, ents + 2, sizeof(**dir));
-				(*dir)[ents] = xcalloc(1, sizeof(***dir));
+				(*dir)[ents] = zalloc(typeof(***dir), 1);
 				(*dir)[ents]->filename = xstrdup(filename);
 				(*dir)[ents]->longname = xstrdup(longname);
 				memcpy(&(*dir)[ents]->a, &a, sizeof(a));
@@ -835,7 +835,7 @@ sftp_lsreaddir(struct sftp_conn *conn, const char *path, int print_flag,
 	} else if (interrupted && dir != NULL && *dir != NULL) {
 		/* Don't return partial matches on interrupt */
 		sftp_free_dirents(*dir);
-		*dir = xcalloc(1, sizeof(**dir));
+		*dir = zalloc(typeof(**dir), 1);
 		**dir = NULL;
 	}
 

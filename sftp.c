@@ -1906,7 +1906,7 @@ complete_cmd_parse(EditLine *el, char *cmd, int lastarg, char quote,
 	char *tmp, **list, argterm[3];
 	const LineInfo *lf;
 
-	list = xcalloc((sizeof(cmds) / sizeof(*cmds)) + 1, sizeof(char *));
+	list = zalloc(char *, (sizeof(cmds) / sizeof(*cmds)) + 1);
 
 	/* No command specified: display all available commands */
 	if (cmd == NULL) {

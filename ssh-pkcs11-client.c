@@ -607,9 +607,9 @@ pkcs11_add_provider(char *name, char *pin, struct sshkey ***keysp,
 	if (type == SSH2_AGENT_IDENTITIES_ANSWER) {
 		if ((r = sshbuf_get_u32(msg, &nkeys)) != 0)
 			fatal_fr(r, "parse nkeys");
-		*keysp = xcalloc(nkeys, sizeof(struct sshkey *));
+		*keysp = zalloc(struct sshkey *, nkeys);
 		if (labelsp)
-			*labelsp = xcalloc(nkeys, sizeof(char *));
+			*labelsp = zalloc(char *, nkeys);
 		for (i = 0; i < nkeys; i++) {
 			/* XXX clean up properly instead of fatal() */
 			if ((r = sshbuf_get_string(msg, &blob, &blen)) != 0 ||

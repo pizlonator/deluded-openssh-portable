@@ -675,7 +675,7 @@ stringlist_append(char ***listp, const char *s)
 	size_t i = 0;
 
 	if (*listp == NULL)
-		*listp = xcalloc(2, sizeof(**listp));
+		*listp = zalloc(typeof(**listp), 2);
 	else {
 		for (i = 0; (*listp)[i] != NULL; i++)
 			; /* count */

@@ -302,16 +302,16 @@ gen_candidates(FILE *out, u_int32_t memory, u_int32_t power, BIGNUM *start)
 		largewords = (largememory << SHIFT_MEGAWORD);
 	}
 
-	TinySieve = xcalloc(tinywords, sizeof(u_int32_t));
+	TinySieve = zalloc(u_int32_t, tinywords);
 	tinybits = tinywords << SHIFT_WORD;
 
-	SmallSieve = xcalloc(smallwords, sizeof(u_int32_t));
+	SmallSieve = zalloc(u_int32_t, smallwords);
 	smallbits = smallwords << SHIFT_WORD;
 
 	/*
 	 * dynamically determine available memory
 	 */
-	while ((LargeSieve = calloc(largewords, sizeof(u_int32_t))) == NULL)
+	while ((LargeSieve = zalloc(u_int32_t, largewords)) == NULL)
 		largewords -= (1L << (SHIFT_MEGAWORD - 2)); /* 1/4 MB chunks */
 
 	largebits = largewords << SHIFT_WORD;
