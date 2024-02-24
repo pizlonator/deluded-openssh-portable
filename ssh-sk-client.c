@@ -447,8 +447,7 @@ sshsk_load_resident(const char *provider_path, const char *device,
 		srk->user_id_len = userid_len;
 		userid = NULL;
 		userid_len = 0;
-		if ((tmp = recallocarray(srks, nsrks, nsrks + 1,
-		    sizeof(*srks))) == NULL) {
+		if ((tmp = zrealloc(zrestrict(srks, typeof(*srks), nsrks), typeof(*srks), nsrks + 1)) == NULL) {
 			error_f("recallocarray keys failed");
 			goto out;
 		}

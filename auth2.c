@@ -782,8 +782,7 @@ auth2_record_key(Authctxt *authctxt, int authenticated,
 	if ((r = sshkey_from_private(key, &dup)) != 0)
 		fatal_fr(r, "copy key");
 	if (authctxt->nprev_keys >= INT_MAX ||
-	    (tmp = recallocarray(authctxt->prev_keys, authctxt->nprev_keys,
-	    authctxt->nprev_keys + 1, sizeof(*authctxt->prev_keys))) == NULL)
+	    (tmp = zrealloc(zrestrict(authctxt->prev_keys, typeof(*authctxt->prev_keys), authctxt->nprev_keys), typeof(*authctxt->prev_keys), authctxt->nprev_keys + 1)) == NULL)
 		fatal_f("reallocarray failed");
 	authctxt->prev_keys = tmp;
 	authctxt->prev_keys[authctxt->nprev_keys] = dup;

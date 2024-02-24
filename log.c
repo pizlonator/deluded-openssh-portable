@@ -166,8 +166,7 @@ log_verbose_add(const char *s)
 	char **tmp;
 
 	/* Ignore failures here */
-	if ((tmp = recallocarray(log_verbose, nlog_verbose, nlog_verbose + 1,
-	    sizeof(*log_verbose))) != NULL) {
+	if ((tmp = zrealloc(zrestrict(log_verbose, typeof(*log_verbose), nlog_verbose), typeof(*log_verbose), nlog_verbose + 1)) != NULL) {
 		log_verbose = tmp;
 		if ((log_verbose[nlog_verbose] = strdup(s)) != NULL)
 			nlog_verbose++;

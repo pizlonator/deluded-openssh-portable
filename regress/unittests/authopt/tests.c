@@ -74,7 +74,7 @@ commasplit(const char *s, size_t *np)
 	ocp = cp = strdup(s);
 	ASSERT_PTR_NE(cp, NULL);
 	for (n = 0; (cp2 = strsep(&cp, ",")) != NULL;) {
-		ret = recallocarray(ret, n, n + 1, sizeof(*ret));
+		ret = zrealloc(zrestrict(ret, typeof(*ret), n), typeof(*ret), n + 1);
 		ASSERT_PTR_NE(ret, NULL);
 		cp2 = strdup(cp2);
 		ASSERT_PTR_NE(cp2, NULL);

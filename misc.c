@@ -2627,12 +2627,11 @@ opt_array_append2(const char *file, const int line, const char *directive,
 		fatal("%s line %d: Too many %s entries", file, line, directive);
 
 	if (iarray != NULL) {
-		*iarray = xrecallocarray(*iarray, *lp, *lp + 1,
-		    sizeof(**iarray));
+		*iarray = zrealloc(zrestrict(*iarray, typeof(**iarray), *lp), typeof(**iarray), *lp + 1);
 		(*iarray)[*lp] = i;
 	}
 
-	*array = xrecallocarray(*array, *lp, *lp + 1, sizeof(**array));
+	*array = zrealloc(zrestrict(*array, typeof(**array), *lp), typeof(**array), *lp + 1);
 	(*array)[*lp] = xstrdup(s);
 	(*lp)++;
 }

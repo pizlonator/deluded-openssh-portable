@@ -307,8 +307,7 @@ handle_permit(const char **optsp, int allow_bare_port,
 	/* XXX - add streamlocal support */
 	free(tmp);
 	/* Record it */
-	if ((permits = recallocarray(permits, npermits, npermits + 1,
-	    sizeof(*permits))) == NULL) {
+	if ((permits = zrealloc(zrestrict(permits, typeof(*permits), npermits), typeof(*permits), npermits + 1)) == NULL) {
 		free(opt);
 		/* NB. don't update *permitsp if alloc fails */
 		*errstrp = "memory allocation failed";
@@ -437,9 +436,7 @@ sshauthopt_parse(const char *opts, const char **errstrp)
 			if (i >= ret->nenv) {
 				/* Append it. */
 				oarray = ret->env;
-				if ((ret->env = recallocarray(ret->env,
-				    ret->nenv, ret->nenv + 1,
-				    sizeof(*ret->env))) == NULL) {
+				if ((ret->env = zrealloc(zrestrict(ret->env, typeof(*ret->env), ret->nenv), typeof(*ret->env), ret->nenv + 1)) == NULL) {
 					free(opt);
 					/* put it back for cleanup */
 					ret->env = oarray;

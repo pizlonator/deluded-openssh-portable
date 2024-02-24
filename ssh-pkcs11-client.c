@@ -143,8 +143,7 @@ helper_free(struct helper *helper)
 			helpers[i - 1] = helpers[i];
 	}
 	if (found) {
-		helpers = xrecallocarray(helpers, nhelpers,
-		    nhelpers - 1, sizeof(*helpers));
+		helpers = zrealloc(zrestrict(helpers, typeof(*helpers), nhelpers), typeof(*helpers), nhelpers - 1);
 		nhelpers--;
 	}
 	free(helper->path);
@@ -573,8 +572,7 @@ pkcs11_start_helper(const char *path)
 	helper->pid = pid;
 	debug3_f("helper %zu for \"%s\" on fd %d pid %ld", nhelpers,
 	    helper->path, helper->fd, (long)helper->pid);
-	helpers = xrecallocarray(helpers, nhelpers,
-	    nhelpers + 1, sizeof(*helpers));
+	helpers = zrealloc(zrestrict(helpers, typeof(*helpers), nhelpers), typeof(*helpers), nhelpers + 1);
 	helpers[nhelpers++] = helper;
 	return helper;
 }

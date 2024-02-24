@@ -1746,8 +1746,7 @@ session_new(void)
 			return NULL;
 		debug2_f("allocate (allocated %d max %d)",
 		    sessions_nalloc, options.max_sessions);
-		tmp = xrecallocarray(sessions, sessions_nalloc,
-		    sessions_nalloc + 1, sizeof(*sessions));
+		tmp = zrealloc(zrestrict(sessions, typeof(*sessions), sessions_nalloc), typeof(*sessions), sessions_nalloc + 1);
 		if (tmp == NULL) {
 			error_f("cannot allocate %d sessions",
 			    sessions_nalloc + 1);
@@ -2096,8 +2095,7 @@ session_env_req(struct ssh *ssh, Session *s)
 	for (i = 0; i < options.num_accept_env; i++) {
 		if (match_pattern(name, options.accept_env[i])) {
 			debug2("Setting env %d: %s=%s", s->num_env, name, val);
-			s->env = xrecallocarray(s->env, s->num_env,
-			    s->num_env + 1, sizeof(*s->env));
+			s->env = zrealloc(zrestrict(s->env, typeof(*s->env), s->num_env), typeof(*s->env), s->num_env + 1);
 			s->env[s->num_env].name = name;
 			s->env[s->num_env].val = val;
 			s->num_env++;

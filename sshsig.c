@@ -1104,8 +1104,7 @@ sshsig_match_principals(const char *path, const char *principal,
 			oerrno = errno;
 			break; /* unexpected error */
 		}
-		if ((tmp = recallocarray(principals, nprincipals,
-		    nprincipals + 1, sizeof(*principals))) == NULL) {
+		if ((tmp = zrealloc(zrestrict(principals, typeof(*principals), nprincipals), typeof(*principals), nprincipals + 1)) == NULL) {
 			ret = SSH_ERR_ALLOC_FAIL;
 			free(found);
 			break;

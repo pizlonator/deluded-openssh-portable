@@ -2172,8 +2172,7 @@ hostkeys_find(struct hostkey_foreach_line *l, void *_ctx)
 	/* This line contained a key that not offered by the server */
 	debug3_f("deprecated %s key at %s:%ld", sshkey_ssh_name(l->key),
 	    l->path, l->linenum);
-	if ((tmp = recallocarray(ctx->old_keys, ctx->nold, ctx->nold + 1,
-	    sizeof(*ctx->old_keys))) == NULL)
+	if ((tmp = zrealloc(zrestrict(ctx->old_keys, typeof(*ctx->old_keys), ctx->nold), typeof(*ctx->old_keys), ctx->nold + 1)) == NULL)
 		fatal_f("recallocarray failed nold = %zu", ctx->nold);
 	ctx->old_keys = tmp;
 	ctx->old_keys[ctx->nold++] = l->key;
@@ -2524,8 +2523,7 @@ client_input_hostkeys(struct ssh *ssh)
 			}
 		}
 		/* Key is good, record it */
-		if ((tmp = recallocarray(ctx->keys, ctx->nkeys, ctx->nkeys + 1,
-		    sizeof(*ctx->keys))) == NULL)
+		if ((tmp = zrealloc(zrestrict(ctx->keys, typeof(*ctx->keys), ctx->nkeys), typeof(*ctx->keys), ctx->nkeys + 1)) == NULL)
 			fatal_f("recallocarray failed nkeys = %zu",
 			    ctx->nkeys);
 		ctx->keys = tmp;

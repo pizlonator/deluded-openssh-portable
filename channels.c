@@ -318,8 +318,7 @@ channel_add_timeout(struct ssh *ssh, const char *type_pattern,
 
 	debug2_f("channel type \"%s\" timeout %d seconds",
 	    type_pattern, timeout_secs);
-	sc->timeouts = xrecallocarray(sc->timeouts, sc->ntimeouts,
-	    sc->ntimeouts + 1, sizeof(*sc->timeouts));
+	sc->timeouts = zrealloc(zrestrict(sc->timeouts, typeof(*sc->timeouts), sc->ntimeouts), typeof(*sc->timeouts), sc->ntimeouts + 1);
 	sc->timeouts[sc->ntimeouts].type_pattern = xstrdup(type_pattern);
 	sc->timeouts[sc->ntimeouts].timeout_secs = timeout_secs;
 	sc->ntimeouts++;
@@ -473,8 +472,7 @@ channel_new(struct ssh *ssh, char *ctype, int type, int rfd, int wfd, int efd,
 		if (sc->channels_alloc > CHANNELS_MAX_CHANNELS)
 			fatal_f("internal error: channels_alloc %d too big",
 			    sc->channels_alloc);
-		sc->channels = xrecallocarray(sc->channels, sc->channels_alloc,
-		    sc->channels_alloc + 10, sizeof(*sc->channels));
+		sc->channels = zrealloc(zrestrict(sc->channels, typeof(*sc->channels), sc->channels_alloc), typeof(*sc->channels), sc->channels_alloc + 10);
 		sc->channels_alloc += 10;
 		debug2("channel: expanding %d", sc->channels_alloc);
 	}
@@ -650,7 +648,7 @@ permission_set_add(struct ssh *ssh, int who, int where,
 	if (*npermp >= INT_MAX)
 		fatal_f("%s overflow", fwd_ident(who, where));
 
-	*permp = xrecallocarray(*permp, *npermp, *npermp + 1, sizeof(**permp));
+	*permp = zrealloc(zrestrict(*permp, typeof(**permp), *npermp), typeof(**permp), *npermp + 1);
 	n = (*npermp)++;
 #define MAYBE_DUP(s) ((s == NULL) ? NULL : xstrdup(s))
 	(*permp)[n].host_to_connect = MAYBE_DUP(host_to_connect);
@@ -2774,8 +2772,7 @@ channel_prepare_poll(struct ssh *ssh, struct pollfd **pfdp, u_int *npfd_allocp,
 		fatal_f("too many channels"); /* shouldn't happen */
 	npfd += sc->channels_alloc * 4;
 	if (npfd > *npfd_allocp) {
-		*pfdp = xrecallocarray(*pfdp, *npfd_allocp,
-		    npfd, sizeof(**pfdp));
+		*pfdp = zrealloc(zrestrict(*pfdp, typeof(**pfdp), *npfd_allocp), typeof(**pfdp), npfd);
 		*npfd_allocp = npfd;
 	}
 	*npfd_activep = npfd_reserved;
@@ -4508,7 +4505,7 @@ channel_clear_permission(struct ssh *ssh, int who, int where)
 	u_int *npermp;
 
 	permission_set_get_array(ssh, who, where, &permp, &npermp);
-	*permp = xrecallocarray(*permp, *npermp, 0, sizeof(**permp));
+	*permp = zrealloc(zrestrict(*permp, typeof(**permp), *npermp), typeof(**permp), 0);
 	*npermp = 0;
 }
 

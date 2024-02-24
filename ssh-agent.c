@@ -1092,10 +1092,8 @@ parse_dest_constraint_hop(struct sshbuf *b, struct dest_constraint_hop *dch)
 		dch->user = NULL;
 	}
 	while (sshbuf_len(b) != 0) {
-		dch->keys = xrecallocarray(dch->keys, dch->nkeys,
-		    dch->nkeys + 1, sizeof(*dch->keys));
-		dch->key_is_ca = xrecallocarray(dch->key_is_ca, dch->nkeys,
-		    dch->nkeys + 1, sizeof(*dch->key_is_ca));
+		dch->keys = zrealloc(zrestrict(dch->keys, typeof(*dch->keys), dch->nkeys), typeof(*dch->keys), dch->nkeys + 1);
+		dch->key_is_ca = zrealloc(zrestrict(dch->key_is_ca, typeof(*dch->key_is_ca), dch->nkeys), typeof(*dch->key_is_ca), dch->nkeys + 1);
 		if ((r = sshkey_froms(b, &k)) != 0 ||
 		    (r = sshbuf_get_u8(b, &key_is_ca)) != 0)
 			goto out;
@@ -1215,8 +1213,7 @@ parse_key_constraint_extension(struct sshbuf *m, char **sk_providerp,
 				error_f("too many %s constraints", ext_name);
 				goto out;
 			}
-			*dcsp = xrecallocarray(*dcsp, *ndcsp, *ndcsp + 1,
-			    sizeof(**dcsp));
+			*dcsp = zrealloc(zrestrict(*dcsp, typeof(**dcsp), *ndcsp), typeof(**dcsp), *ndcsp + 1);
 			if ((r = parse_dest_constraint(b,
 			    *dcsp + (*ndcsp)++)) != 0)
 				goto out; /* error already logged */
@@ -1243,8 +1240,7 @@ parse_key_constraint_extension(struct sshbuf *m, char **sk_providerp,
 				error_f("too many %s constraints", ext_name);
 				goto out;
 			}
-			*certs = xrecallocarray(*certs, *ncerts, *ncerts + 1,
-			    sizeof(**certs));
+			*certs = zrealloc(zrestrict(*certs, typeof(**certs), *ncerts), typeof(**certs), *ncerts + 1);
 			if ((r = sshkey_froms(b, &k)) != 0) {
 				error_fr(r, "parse key");
 				goto out;
@@ -1739,8 +1735,7 @@ process_ext_session_bind(SocketEntry *e)
 		error_f("too many session IDs recorded");
 		goto out;
 	}
-	e->session_ids = xrecallocarray(e->session_ids, e->nsession_ids,
-	    e->nsession_ids + 1, sizeof(*e->session_ids));
+	e->session_ids = zrealloc(zrestrict(e->session_ids, typeof(*e->session_ids), e->nsession_ids), typeof(*e->session_ids), e->nsession_ids + 1);
 	i = e->nsession_ids++;
 	debug_f("recorded %s %s (slot %zu of %d)", sshkey_type(key), fp, i,
 	    AGENT_MAX_SESSION_IDS);
@@ -2082,7 +2077,7 @@ prepare_poll(struct pollfd **pfdp, size_t *npfdp, int *timeoutp, u_int maxfds)
 		}
 	}
 	if (npfd != *npfdp &&
-	    (pfd = recallocarray(pfd, *npfdp, npfd, sizeof(*pfd))) == NULL)
+	    (pfd = zrealloc(zrestrict(pfd, typeof(*pfd), *npfdp), typeof(*pfd), npfd)) == NULL)
 		fatal_f("recallocarray failed");
 	*pfdp = pfd;
 	*npfdp = npfd;

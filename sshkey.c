@@ -1812,9 +1812,7 @@ cert_parse(struct sshbuf *b, struct sshkey *key, struct sshbuf *certbuf)
 			goto out;
 		}
 		oprincipals = key->cert->principals;
-		key->cert->principals = recallocarray(key->cert->principals,
-		    key->cert->nprincipals, key->cert->nprincipals + 1,
-		    sizeof(*key->cert->principals));
+		key->cert->principals = zrealloc(zrestrict(key->cert->principals, typeof(*key->cert->principals), key->cert->nprincipals), typeof(*key->cert->principals), key->cert->nprincipals + 1);
 		if (key->cert->principals == NULL) {
 			free(principal);
 			key->cert->principals = oprincipals;

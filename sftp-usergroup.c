@@ -164,7 +164,7 @@ collect_ids_from_glob(glob_t *g, int user, u_int **idsp, u_int *nidsp)
 		}
 		if (has_id(id, ids, n))
 			continue;
-		ids = xrecallocarray(ids, n, n + 1, sizeof(*ids));
+		ids = zrealloc(zrestrict(ids, typeof(*ids), n), typeof(*ids), n + 1);
 		ids[n++] = id;
 	}
 	*idsp = ids;
@@ -203,7 +203,7 @@ collect_ids_from_dirents(SFTP_DIRENT **d, int user, u_int **idsp, u_int *nidsp)
 		}
 		if (has_id(id, ids, n))
 			continue;
-		ids = xrecallocarray(ids, n, n + 1, sizeof(*ids));
+		ids = zrealloc(zrestrict(ids, typeof(*ids), n), typeof(*ids), n + 1);
 		ids[n++] = id;
 	}
 	*idsp = ids;

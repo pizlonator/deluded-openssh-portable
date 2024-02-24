@@ -864,9 +864,7 @@ rm_env(Options *options, const char *arg, const char *filename, int linenum)
 		/* NB. don't increment i */
 	}
 	if (onum_send_env != options->num_send_env) {
-		options->send_env = xrecallocarray(options->send_env,
-		    onum_send_env, options->num_send_env,
-		    sizeof(*options->send_env));
+		options->send_env = zrealloc(zrestrict(options->send_env, typeof(*options->send_env), onum_send_env), typeof(*options->send_env), options->num_send_env);
 	}
 }
 
@@ -1605,8 +1603,7 @@ parse_pubkey_algos:
 			}
 			i++;
 			if (*activep && *uintptr == 0) {
-				*cppptr = xrecallocarray(*cppptr, *uintptr,
-				    *uintptr + 1, sizeof(**cppptr));
+				*cppptr = zrealloc(zrestrict(*cppptr, typeof(**cppptr), *uintptr), typeof(**cppptr), *uintptr + 1);
 				(*cppptr)[(*uintptr)++] = xstrdup(arg);
 			}
 		}

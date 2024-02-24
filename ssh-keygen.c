@@ -3466,8 +3466,7 @@ main(int argc, char **argv)
 			check_krl = 1;
 			break;
 		case 'O':
-			opts = xrecallocarray(opts, nopts, nopts + 1,
-			    sizeof(*opts));
+			opts = zrealloc(zrestrict(opts, typeof(*opts), nopts), typeof(*opts), nopts + 1);
 			opts[nopts++] = xstrdup(optarg);
 			break;
 		case 'Z':

@@ -39,6 +39,19 @@ Dir.glob("**/*.[ch]") {
     #    | match |
     #    "zalloc(typeof(*#{$1}), #{$2})"
     #}
-    contents.gsub!(/xzalloc/) { | match | "zalloc" }
+    #contents.gsub!(/xzalloc/) { | match | "zalloc" }
+    #contents.gsub!(/xrecallocarray\(([^\n]+),\s+([^\n]+),\s+([^\n]+),\s+sizeof\(([a-zA-Z0-9_*]+)\)\)/) {
+    #    | match |
+    #    "zrealloc(zrestrict(#{$1}, typeof(#{$4}), #{$2}), typeof(#{$4}), #{$3})"
+    #}
+    #contents.gsub!(/recallocarray\(([^\n]+),\s+([^\n]+),\s+([^\n]+),\s+sizeof\(([a-zA-Z0-9_*]+)\)\)/) {
+    #    | match |
+    #    "zrealloc(zrestrict(#{$1}, typeof(#{$4}), #{$2}), typeof(#{$4}), #{$3})"
+    #}
+    #contents.gsub!(/recallocarray\(([^\n]+),\s+([^\n]+),\s+([^\n]+),\s+sizeof\(([a-zA-Z0-9_*>-]+)\)\)/) {
+    #    | match |
+    #    "zrealloc(zrestrict(#{$1}, typeof(#{$4}), #{$2}), typeof(#{$4}), #{$3})"
+    #}
+    contents.gsub!(/xzrealloc/) { | match | "zrealloc" }
     IO::write(filename, contents)
 }

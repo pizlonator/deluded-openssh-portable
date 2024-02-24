@@ -1397,8 +1397,7 @@ read_rks(struct sk_usbhid *sk, const char *pin,
 				goto out;
 			}
 			/* append */
-			if ((tmp = recallocarray(*rksp, *nrksp, (*nrksp) + 1,
-			    sizeof(**rksp))) == NULL) {
+			if ((tmp = zrealloc(zrestrict(*rksp, typeof(**rksp), *nrksp), typeof(**rksp), (*nrksp) + 1)) == NULL) {
 				skdebug(__func__, "alloc rksp");
 				goto out;
 			}

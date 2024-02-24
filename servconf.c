@@ -797,9 +797,7 @@ add_one_listen_addr(ServerOptions *options, const char *addr,
 		/* No entry for this rdomain; allocate one */
 		if (i >= INT_MAX)
 			fatal_f("too many listen addresses");
-		options->listen_addrs = xrecallocarray(options->listen_addrs,
-		    options->num_listen_addrs, options->num_listen_addrs + 1,
-		    sizeof(*options->listen_addrs));
+		options->listen_addrs = zrealloc(zrestrict(options->listen_addrs, typeof(*options->listen_addrs), options->num_listen_addrs), typeof(*options->listen_addrs), options->num_listen_addrs + 1);
 		i = options->num_listen_addrs++;
 		if (rdomain != NULL)
 			options->listen_addrs[i].rdomain = xstrdup(rdomain);

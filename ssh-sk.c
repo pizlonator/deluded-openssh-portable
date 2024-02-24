@@ -849,8 +849,7 @@ sshsk_load_resident(const char *provider_path, const char *device,
 		}
 		memcpy(srk->user_id, rks[i]->user_id, rks[i]->user_id_len);
 		srk->user_id_len = rks[i]->user_id_len;
-		if ((tmp = recallocarray(srks, nsrks, nsrks + 1,
-		    sizeof(*tmp))) == NULL) {
+		if ((tmp = zrealloc(zrestrict(srks, typeof(*tmp), nsrks), typeof(*tmp), nsrks + 1)) == NULL) {
 			error_f("recallocarray failed");
 			r = SSH_ERR_ALLOC_FAIL;
 			goto out;

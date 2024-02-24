@@ -679,7 +679,7 @@ stringlist_append(char ***listp, const char *s)
 	else {
 		for (i = 0; (*listp)[i] != NULL; i++)
 			; /* count */
-		*listp = xrecallocarray(*listp, i + 1, i + 2, sizeof(**listp));
+		*listp = zrealloc(zrestrict(*listp, typeof(**listp), i + 1), typeof(**listp), i + 2);
 	}
 	(*listp)[i] = xstrdup(s);
 }
@@ -735,10 +735,8 @@ parse_dest_constraint_hop(const char *s, struct dest_constraint_hop *dch,
 		    user == NULL ? "": user, user == NULL ? "" : "@",
 		    host, sshkey_type(hke->key), want_ca ? "CA " : "",
 		    hke->file, hke->line, dch->nkeys);
-		dch->keys = xrecallocarray(dch->keys, dch->nkeys,
-		    dch->nkeys + 1, sizeof(*dch->keys));
-		dch->key_is_ca = xrecallocarray(dch->key_is_ca, dch->nkeys,
-		    dch->nkeys + 1, sizeof(*dch->key_is_ca));
+		dch->keys = zrealloc(zrestrict(dch->keys, typeof(*dch->keys), dch->nkeys), typeof(*dch->keys), dch->nkeys + 1);
+		dch->key_is_ca = zrealloc(zrestrict(dch->key_is_ca, typeof(*dch->key_is_ca), dch->nkeys), typeof(*dch->key_is_ca), dch->nkeys + 1);
 		if ((r = sshkey_from_private(hke->key,
 		    &(dch->keys[dch->nkeys]))) != 0)
 			fatal_fr(r, "sshkey_from_private");
@@ -780,7 +778,7 @@ parse_dest_constraint(const char *s, struct dest_constraint ***dcp,
 	    dc->from.hostname ? dc->from.hostname : "(ORIGIN)", dc->from.nkeys,
 	    dc->to.user ? dc->to.user : "", dc->to.user ? "@" : "",
 	    dc->to.hostname ? dc->to.hostname : "(ANY)", dc->to.nkeys);
-	*dcp = xrecallocarray(*dcp, *ndcp, *ndcp + 1, sizeof(**dcp));
+	*dcp = zrealloc(zrestrict(*dcp, typeof(**dcp), *ndcp), typeof(**dcp), *ndcp + 1);
 	(*dcp)[(*ndcp)++] = dc;
 	free(os);
 }
@@ -990,8 +988,7 @@ main(int argc, char **argv)
 		for (i = 0; i < argc; i++) {
 			if ((r = sshkey_load_public(argv[i], &k, NULL)) != 0)
 				fatal_fr(r, "load certificate %s", argv[i]);
-			certs = xrecallocarray(certs, ncerts, ncerts + 1,
-			    sizeof(*certs));
+			certs = zrealloc(zrestrict(certs, typeof(*certs), ncerts), typeof(*certs), ncerts + 1);
 			debug2("%s: %s", argv[i], sshkey_ssh_name(k));
 			certs[ncerts++] = k;
 		}
