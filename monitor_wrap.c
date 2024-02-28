@@ -321,7 +321,7 @@ out:
 	} while (0)
 #define M_CP_STRARRAYOPT(x, nx) do { \
 		newopts->x = newopts->nx == 0 ? \
-		    NULL : xcalloc(newopts->nx, sizeof(*newopts->x)); \
+		    NULL : zalloc(typeof(*newopts->x), newopts->nx); \
 		for (i = 0; i < newopts->nx; i++) { \
 			if ((r = sshbuf_get_cstring(m, \
 			    &newopts->x[i], NULL)) != 0) \

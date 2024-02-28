@@ -2776,7 +2776,7 @@ copy_set_server_options(ServerOptions *dst, ServerOptions *src, int preauth)
 		for (i = 0; i < dst->num_s; i++) \
 			free(dst->s[i]); \
 		free(dst->s); \
-		dst->s = xcalloc(src->num_s, sizeof(*dst->s)); \
+		dst->s = zalloc(typeof(*dst->s), src->num_s); \
 		for (i = 0; i < src->num_s; i++) \
 			dst->s[i] = xstrdup(src->s[i]); \
 		dst->num_s = src->num_s; \

@@ -304,8 +304,8 @@ ssh_fetch_identitylist(int sock, struct ssh_identitylist **idlp)
 
 	/* Deserialise the response into a list of keys/comments */
 	if ((idl = zalloc(typeof(*idl), 1)) == NULL ||
-	    (idl->keys = calloc(num, sizeof(*idl->keys))) == NULL ||
-	    (idl->comments = calloc(num, sizeof(*idl->comments))) == NULL) {
+	    (idl->keys = zalloc(typeof(*idl->keys), num)) == NULL ||
+	    (idl->comments = zalloc(typeof(*idl->comments), num)) == NULL) {
 		r = SSH_ERR_ALLOC_FAIL;
 		goto out;
 	}

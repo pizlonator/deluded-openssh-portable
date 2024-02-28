@@ -239,7 +239,7 @@ channel_init_channels(struct ssh *ssh)
 	if ((sc = zalloc(typeof(*sc), 1)) == NULL)
 		fatal_f("allocation failed");
 	sc->channels_alloc = 10;
-	sc->channels = xcalloc(sc->channels_alloc, sizeof(*sc->channels));
+	sc->channels = zalloc(typeof(*sc->channels), sc->channels_alloc);
 	sc->IPv4or6 = AF_UNSPEC;
 	channel_handler_init(sc);
 

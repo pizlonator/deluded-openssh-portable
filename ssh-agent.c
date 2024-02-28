@@ -262,9 +262,9 @@ dup_dest_constraint_hop(const struct dest_constraint_hop *dch,
 	out->is_ca = dch->is_ca;
 	out->nkeys = dch->nkeys;
 	out->keys = out->nkeys == 0 ? NULL :
-	    xcalloc(out->nkeys, sizeof(*out->keys));
+	    zalloc(typeof(*out->keys), out->nkeys);
 	out->key_is_ca = out->nkeys == 0 ? NULL :
-	    xcalloc(out->nkeys, sizeof(*out->key_is_ca));
+	    zalloc(typeof(*out->key_is_ca), out->nkeys);
 	for (i = 0; i < dch->nkeys; i++) {
 		if (dch->keys[i] != NULL &&
 		    (r = sshkey_from_private(dch->keys[i],
