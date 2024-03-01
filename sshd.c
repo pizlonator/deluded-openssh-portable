@@ -1146,8 +1146,7 @@ server_accept_loop(int *sock_in, int *sock_out, int *newsock, int *config_s)
 	sigaddset(&nsigset, SIGQUIT);
 
 	/* sized for worst-case */
-	pfd = xcalloc(num_listen_socks + options.max_startups,
-	    sizeof(struct pollfd));
+	pfd = zalloc(typeof(struct pollfd), num_listen_socks + options.max_startups);
 
 	/*
 	 * Stay listening for connections until the system crashes or
@@ -1829,10 +1828,8 @@ main(int ac, char **av)
 	endpwent();
 
 	/* load host keys */
-	sensitive_data.host_keys = xcalloc(options.num_host_key_files,
-	    sizeof(struct sshkey *));
-	sensitive_data.host_pubkeys = xcalloc(options.num_host_key_files,
-	    sizeof(struct sshkey *));
+	sensitive_data.host_keys = zalloc(typeof(struct sshkey *), options.num_host_key_files);
+	sensitive_data.host_pubkeys = zalloc(typeof(struct sshkey *), options.num_host_key_files);
 
 	if (options.host_key_agent) {
 		if (strcmp(options.host_key_agent, SSH_AUTHSOCKET_ENV_NAME))
@@ -1939,8 +1936,7 @@ main(int ac, char **av)
 	 * Load certificates. They are stored in an array at identical
 	 * indices to the public keys that they relate to.
 	 */
-	sensitive_data.host_certificates = xcalloc(options.num_host_key_files,
-	    sizeof(struct sshkey *));
+	sensitive_data.host_certificates = zalloc(typeof(struct sshkey *), options.num_host_key_files);
 	for (i = 0; i < options.num_host_key_files; i++)
 		sensitive_data.host_certificates[i] = NULL;
 

@@ -73,7 +73,7 @@ Dir.glob("**/*.[ch]") {
     #    | match |
     #    "zrealloc(zrestrict(#{$1}, typeof(#{$4}), #{$2}), typeof(#{$4}), #{$3})"
     #}
-    contents.gsub!(/xcalloc\(\s*([^\n]+),\s+sizeof\(([a-zA-Z0-9_*>-]+)\)\)/) {
+    contents.gsub!(/xcalloc\(\s*([^\n]+),\s+sizeof\(([ a-zA-Z0-9_*>-]+)\)\)/) {
         | match |
         "zalloc(typeof(#{$2}), #{$1})"
     }
