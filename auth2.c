@@ -625,8 +625,7 @@ auth2_setup_methods_lists(Authctxt *authctxt)
 	if (options.num_auth_methods == 0)
 		return 0;
 	debug3_f("checking methods");
-	authctxt->auth_methods = xcalloc(options.num_auth_methods,
-	    sizeof(*authctxt->auth_methods));
+	authctxt->auth_methods = zalloc(typeof(*authctxt->auth_methods), options.num_auth_methods);
 	authctxt->num_auth_methods = 0;
 	for (i = 0; i < options.num_auth_methods; i++) {
 		if (auth2_methods_valid(options.auth_methods[i], 1) != 0) {

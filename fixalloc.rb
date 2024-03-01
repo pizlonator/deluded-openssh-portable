@@ -65,9 +65,17 @@ Dir.glob("**/*.[ch]") {
     #    | match |
     #    "zalloc(typeof(*#{$2}), #{$1})"
     #}
-    contents.gsub!(/xreallocarray\(([^\n]+),\s+([^\n]+),\s+sizeof\(([a-zA-Z0-9_*]+)\)\)/) {
+    #contents.gsub!(/xreallocarray\(([^\n]+),\s+([^\n]+),\s+sizeof\(([a-zA-Z0-9_*]+)\)\)/) {
+    #    | match |
+    #    "zrealloc(#{$1}, typeof(#{$3}), #{$2})"
+    #}
+    #contents.gsub!(/xrecallocarray\(\s*([^\n]+),\s+([^\n]+),\s+([^\n]+),\s+sizeof\(([a-zA-Z0-9_*>-]+)\)\)/) {
+    #    | match |
+    #    "zrealloc(zrestrict(#{$1}, typeof(#{$4}), #{$2}), typeof(#{$4}), #{$3})"
+    #}
+    contents.gsub!(/xcalloc\(\s*([^\n]+),\s+sizeof\(([a-zA-Z0-9_*>-]+)\)\)/) {
         | match |
-        "zrealloc(#{$1}, typeof(#{$3}), #{$2})"
+        "zalloc(typeof(#{$2}), #{$1})"
     }
     IO::write(filename, contents)
 }

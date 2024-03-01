@@ -865,10 +865,7 @@ queue_listen_addr(ServerOptions *options, const char *addr,
 {
 	struct queued_listenaddr *qla;
 
-	options->queued_listen_addrs = xrecallocarray(
-	    options->queued_listen_addrs,
-	    options->num_queued_listens, options->num_queued_listens + 1,
-	    sizeof(*options->queued_listen_addrs));
+	options->queued_listen_addrs = zrealloc(zrestrict(options->queued_listen_addrs, typeof(*options->queued_listen_addrs), options->num_queued_listens), typeof(*options->queued_listen_addrs), options->num_queued_listens + 1);
 	qla = &options->queued_listen_addrs[options->num_queued_listens++];
 	qla->addr = xstrdup(addr);
 	qla->port = port;
@@ -1919,18 +1916,9 @@ process_server_config_line_depth(ServerOptions *options, char *line,
 			argv_consume(&ac);
 			break;
 		}
-		options->subsystem_name = xrecallocarray(
-		    options->subsystem_name, options->num_subsystems,
-		    options->num_subsystems + 1,
-		    sizeof(*options->subsystem_name));
-		options->subsystem_command = xrecallocarray(
-		    options->subsystem_command, options->num_subsystems,
-		    options->num_subsystems + 1,
-		    sizeof(*options->subsystem_command));
-		options->subsystem_args = xrecallocarray(
-		    options->subsystem_args, options->num_subsystems,
-		    options->num_subsystems + 1,
-		    sizeof(*options->subsystem_args));
+		options->subsystem_name = zrealloc(zrestrict(options->subsystem_name, typeof(*options->subsystem_name), options->num_subsystems), typeof(*options->subsystem_name), options->num_subsystems + 1);
+		options->subsystem_command = zrealloc(zrestrict(options->subsystem_command, typeof(*options->subsystem_command), options->num_subsystems), typeof(*options->subsystem_command), options->num_subsystems + 1);
+		options->subsystem_args = zrealloc(zrestrict(options->subsystem_args, typeof(*options->subsystem_args), options->num_subsystems), typeof(*options->subsystem_args), options->num_subsystems + 1);
 		options->subsystem_name[options->num_subsystems] = xstrdup(arg);
 		arg = argv_next(&ac, &av);
 		if (!arg || *arg == '\0') {
@@ -2259,8 +2247,7 @@ process_server_config_line_depth(ServerOptions *options, char *line,
 		if (strcmp(arg, "any") == 0 || strcmp(arg, "none") == 0) {
 			if (*activep && uvalue == 0) {
 				*uintptr = 1;
-				*chararrayptr = xcalloc(1,
-				    sizeof(**chararrayptr));
+				*chararrayptr = zalloc(typeof(**chararrayptr), 1);
 				(*chararrayptr)[0] = xstrdup(arg);
 			}
 			break;
@@ -2685,15 +2672,9 @@ servconf_merge_subsystems(ServerOptions *dst, ServerOptions *src)
 			continue;
 		}
 		debug_f("add \"%s\"", src->subsystem_name[i]);
-		dst->subsystem_name = xrecallocarray(
-		    dst->subsystem_name, dst->num_subsystems,
-		    dst->num_subsystems + 1, sizeof(*dst->subsystem_name));
-		dst->subsystem_command = xrecallocarray(
-		    dst->subsystem_command, dst->num_subsystems,
-		    dst->num_subsystems + 1, sizeof(*dst->subsystem_command));
-		dst->subsystem_args = xrecallocarray(
-		    dst->subsystem_args, dst->num_subsystems,
-		    dst->num_subsystems + 1, sizeof(*dst->subsystem_args));
+		dst->subsystem_name = zrealloc(zrestrict(dst->subsystem_name, typeof(*dst->subsystem_name), dst->num_subsystems), typeof(*dst->subsystem_name), dst->num_subsystems + 1);
+		dst->subsystem_command = zrealloc(zrestrict(dst->subsystem_command, typeof(*dst->subsystem_command), dst->num_subsystems), typeof(*dst->subsystem_command), dst->num_subsystems + 1);
+		dst->subsystem_args = zrealloc(zrestrict(dst->subsystem_args, typeof(*dst->subsystem_args), dst->num_subsystems), typeof(*dst->subsystem_args), dst->num_subsystems + 1);
 		j = dst->num_subsystems++;
 		dst->subsystem_name[j] = xstrdup(src->subsystem_name[i]);
 		dst->subsystem_command[j] = xstrdup(src->subsystem_command[i]);
