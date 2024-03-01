@@ -65,8 +65,7 @@ ga_init(const char *user, gid_t base)
 	while (getgrouplist(user, base, groups_bygid, &ngroups) == -1) {
 		if (retry++ > 0)
 			fatal("getgrouplist: groups list too small");
-		groups_bygid = xreallocarray(groups_bygid, ngroups,
-		    sizeof(*groups_bygid));
+		groups_bygid = zrealloc(groups_bygid, typeof(*groups_bygid), ngroups);
 	}
 	groups_byname = zalloc(typeof(*groups_byname), ngroups);
 

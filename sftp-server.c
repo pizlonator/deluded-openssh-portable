@@ -343,7 +343,7 @@ handle_new(int use, const char *name, int fd, int flags, DIR *dirp)
 		if (num_handles + 1 <= num_handles)
 			return -1;
 		num_handles++;
-		handles = xreallocarray(handles, num_handles, sizeof(Handle));
+		handles = zrealloc(handles, typeof(Handle), num_handles);
 		handle_unused(num_handles - 1);
 	}
 
@@ -1152,7 +1152,7 @@ process_readdir(u_int32_t id)
 		while ((dp = readdir(dirp)) != NULL) {
 			if (count >= nstats) {
 				nstats *= 2;
-				stats = xreallocarray(stats, nstats, sizeof(Stat));
+				stats = zrealloc(stats, typeof(Stat), nstats);
 			}
 /* XXX OVERFLOW ? */
 			snprintf(pathname, sizeof pathname, "%s%s%s", path,

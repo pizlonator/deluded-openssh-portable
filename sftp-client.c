@@ -810,7 +810,7 @@ sftp_lsreaddir(struct sftp_conn *conn, const char *path, int print_flag,
 				error("Server sent suspect path \"%s\" "
 				    "during readdir of \"%s\"", filename, path);
 			} else if (dir) {
-				*dir = xreallocarray(*dir, ents + 2, sizeof(**dir));
+				*dir = zrealloc(*dir, typeof(**dir), ents + 2);
 				(*dir)[ents] = zalloc(typeof(***dir), 1);
 				(*dir)[ents]->filename = xstrdup(filename);
 				(*dir)[ents]->longname = xstrdup(longname);

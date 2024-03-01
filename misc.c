@@ -2032,7 +2032,7 @@ argv_split(const char *s, int *argcp, char ***argvp, int terminate_on_comment)
 		/* Start of a token */
 		quote = 0;
 
-		argv = xreallocarray(argv, (argc + 2), sizeof(*argv));
+		argv = zrealloc(argv, typeof(*argv), (argc + 2));
 		arg = argv[argc++] = xcalloc(1, strlen(s + i) + 1);
 		argv[argc] = NULL;
 
