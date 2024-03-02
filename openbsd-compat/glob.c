@@ -827,7 +827,7 @@ globextend(const Char *path, glob_t *pglob, struct glob_lim *limitp,
 		return(GLOB_NOSPACE);
 	}
 
-	pathv = reallocarray(pglob->gl_pathv, newn, sizeof(*pathv));
+	pathv = zrealloc(pglob->gl_pathv, typeof(*pathv), newn);
 	if (pathv == NULL)
 		goto nospace;
 	if (pglob->gl_pathv == NULL && pglob->gl_offs > 0) {
@@ -839,7 +839,7 @@ globextend(const Char *path, glob_t *pglob, struct glob_lim *limitp,
 	pglob->gl_pathv = pathv;
 
 	if ((pglob->gl_flags & GLOB_KEEPSTAT) != 0) {
-		statv = reallocarray(pglob->gl_statv, newn, sizeof(*statv));
+		statv = zrealloc(pglob->gl_statv, typeof(*statv), newn);
 		if (statv == NULL)
 			goto nospace;
 		if (pglob->gl_statv == NULL && pglob->gl_offs > 0) {

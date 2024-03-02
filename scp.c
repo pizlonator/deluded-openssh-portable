@@ -766,7 +766,7 @@ append(char *cp, char ***ap, size_t *np)
 {
 	char **tmp;
 
-	if ((tmp = reallocarray(*ap, *np + 1, sizeof(*tmp))) == NULL)
+	if ((tmp = zrealloc(*ap, typeof(*tmp), *np + 1)) == NULL)
 		return -1;
 	tmp[(*np)] = cp;
 	(*np)++;

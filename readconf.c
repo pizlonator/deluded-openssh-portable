@@ -385,9 +385,7 @@ add_local_forward(Options *options, const struct Forward *newfwd)
 		if (forward_equals(newfwd, options->local_forwards + i))
 			return;
 	}
-	options->local_forwards = xreallocarray(options->local_forwards,
-	    options->num_local_forwards + 1,
-	    sizeof(*options->local_forwards));
+	options->local_forwards = zrealloc(options->local_forwards, typeof(*options->local_forwards), options->num_local_forwards + 1);
 	fwd = &options->local_forwards[options->num_local_forwards++];
 
 	fwd->listen_host = newfwd->listen_host;
@@ -414,9 +412,7 @@ add_remote_forward(Options *options, const struct Forward *newfwd)
 		if (forward_equals(newfwd, options->remote_forwards + i))
 			return;
 	}
-	options->remote_forwards = xreallocarray(options->remote_forwards,
-	    options->num_remote_forwards + 1,
-	    sizeof(*options->remote_forwards));
+	options->remote_forwards = zrealloc(options->remote_forwards, typeof(*options->remote_forwards), options->num_remote_forwards + 1);
 	fwd = &options->remote_forwards[options->num_remote_forwards++];
 
 	fwd->listen_host = newfwd->listen_host;

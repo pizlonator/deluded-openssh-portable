@@ -373,8 +373,7 @@ mux_master_process_new_session(struct ssh *ssh, u_int rid,
 			free(cp);
 			continue;
 		}
-		cctx->env = xreallocarray(cctx->env, env_len + 2,
-		    sizeof(*cctx->env));
+		cctx->env = zrealloc(cctx->env, typeof(*cctx->env), env_len + 2);
 		cctx->env[env_len++] = cp;
 		cctx->env[env_len] = NULL;
 		if (env_len > MUX_MAX_ENV_VARS) {

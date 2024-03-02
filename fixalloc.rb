@@ -52,7 +52,7 @@ Dir.glob("**/*.[ch]") {
     #    | match |
     #    "zrealloc(zrestrict(#{$1}, typeof(#{$4}), #{$2}), typeof(#{$4}), #{$3})"
     #}
-    #contents.gsub!(/xzrealloc/) { | match | "zrealloc" }
+    contents.gsub!(/xzrealloc/) { | match | "zrealloc" }
     #contents.gsub!(/calloc\(([^\n]+), sizeof\(([a-zA-Z0-9_ *]+)\)\)/) {
     #    | match |
     #    "zalloc(#{$2}, #{$1})"
@@ -73,9 +73,13 @@ Dir.glob("**/*.[ch]") {
     #    | match |
     #    "zrealloc(zrestrict(#{$1}, typeof(#{$4}), #{$2}), typeof(#{$4}), #{$3})"
     #}
-    contents.gsub!(/xcalloc\(\s*([^\n]+),\s+sizeof\(([ a-zA-Z0-9_*>-]+)\)\)/) {
-        | match |
-        "zalloc(typeof(#{$2}), #{$1})"
-    }
+    #contents.gsub!(/xcalloc\(\s*([^\n]+),\s+sizeof\(([ a-zA-Z0-9_*>-]+)\)\)/) {
+    #    | match |
+    #    "zalloc(typeof(#{$2}), #{$1})"
+    #}
+    #contents.gsub!(/reallocarray\(\s*([^\n]+),\s+([^\n]+),\s+sizeof\(([a-zA-Z0-9_*>-]+)\)\)/) {
+    #    | match |
+    #    "zrealloc(#{$1}, typeof(#{$3}), #{$2})"
+    #}
     IO::write(filename, contents)
 }
