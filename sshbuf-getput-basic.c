@@ -524,7 +524,7 @@ sshbuf_put_string(struct sshbuf *buf, const void *v, size_t len)
 		return r;
 	POKE_U32(d, len);
 	if (len != 0)
-		memcpy(d + 4, v, len);
+		zmemmove_nullify(d + 4, v, len);
 	return 0;
 }
 

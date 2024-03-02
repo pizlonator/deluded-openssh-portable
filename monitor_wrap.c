@@ -312,7 +312,7 @@ out:
 	if (len != sizeof(*newopts))
 		fatal_f("option block size mismatch");
 	newopts = zalloc(typeof(*newopts), 1);
-	memcpy(newopts, p, sizeof(*newopts));
+	zmemmove_nullify(newopts, p, sizeof(*newopts));
 
 #define M_CP_STROPT(x) do { \
 		if (newopts->x != NULL && \
