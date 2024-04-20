@@ -485,7 +485,7 @@ main(int argc, char **argv)
 
 	/* Copy argv, because we modify it */
 	argv0 = argv[0];
-	newargv = zalloc(typeof(*newargv), MAXIMUM(argc + 1, 1));
+	newargv = xcalloc(MAXIMUM(argc + 1, 1), sizeof(*newargv));
 	for (n = 0; n < argc; n++)
 		newargv[n] = xstrdup(argv[n]);
 	argv = newargv;
@@ -766,7 +766,7 @@ append(char *cp, char ***ap, size_t *np)
 {
 	char **tmp;
 
-	if ((tmp = zrealloc(*ap, typeof(*tmp), *np + 1)) == NULL)
+	if ((tmp = reallocarray(*ap, *np + 1, sizeof(*tmp))) == NULL)
 		return -1;
 	tmp[(*np)] = cp;
 	(*np)++;

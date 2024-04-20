@@ -47,7 +47,7 @@ ssh_sandbox_init(struct monitor *monitor)
 	 * Strictly, we don't need to maintain any state here but we need
 	 * to return non-NULL to satisfy the API.
 	 */
-	box = zalloc(typeof(*box), 1);
+	box = xcalloc(1, sizeof(*box));
 	return box;
 }
 

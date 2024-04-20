@@ -255,7 +255,7 @@ cipher_init(struct sshcipher_ctx **ccp, const struct sshcipher *cipher,
 #endif
 
 	*ccp = NULL;
-	if ((cc = zalloc(typeof(*cc), 1)) == NULL)
+	if ((cc = calloc(sizeof(*cc), 1)) == NULL)
 		return SSH_ERR_ALLOC_FAIL;
 
 	cc->plaintext = (cipher->flags & CFLAG_NONE) != 0;

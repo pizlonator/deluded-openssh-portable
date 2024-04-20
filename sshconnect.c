@@ -734,7 +734,8 @@ hostkeys_find_by_key_cb(struct hostkey_foreach_line *l, void *_ctx)
 		return 0;
 	path = try_tilde_unexpand(l->path);
 	debug_f("found matching key in %s:%lu", path, l->linenum);
-	ctx->names = zrealloc(zrestrict(ctx->names, typeof(*ctx->names), ctx->nnames), typeof(*ctx->names), ctx->nnames + 1);
+	ctx->names = xrecallocarray(ctx->names,
+	    ctx->nnames, ctx->nnames + 1, sizeof(*ctx->names));
 	xasprintf(&ctx->names[ctx->nnames], "%s:%lu: %s", path, l->linenum,
 	    strncmp(l->hosts, HASH_MAGIC, strlen(HASH_MAGIC)) == 0 ?
 	    "[hashed name]" : l->hosts);

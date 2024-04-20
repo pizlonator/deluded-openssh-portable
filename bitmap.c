@@ -39,7 +39,7 @@ bitmap_new(void)
 {
 	struct bitmap *ret;
 
-	if ((ret = zalloc(typeof(*ret), 1)) == NULL)
+	if ((ret = calloc(1, sizeof(*ret))) == NULL)
 		return NULL;
 	if ((ret->d = calloc(1, BITMAP_BYTES)) == NULL) {
 		free(ret);

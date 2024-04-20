@@ -236,10 +236,10 @@ channel_init_channels(struct ssh *ssh)
 {
 	struct ssh_channels *sc;
 
-	if ((sc = zalloc(typeof(*sc), 1)) == NULL)
+	if ((sc = calloc(1, sizeof(*sc))) == NULL)
 		fatal_f("allocation failed");
 	sc->channels_alloc = 10;
-	sc->channels = zalloc(typeof(*sc->channels), sc->channels_alloc);
+	sc->channels = xcalloc(sc->channels_alloc, sizeof(*sc->channels));
 	sc->IPv4or6 = AF_UNSPEC;
 	channel_handler_init(sc);
 
@@ -318,7 +318,8 @@ channel_add_timeout(struct ssh *ssh, const char *type_pattern,
 
 	debug2_f("channel type \"%s\" timeout %d seconds",
 	    type_pattern, timeout_secs);
-	sc->timeouts = zrealloc(zrestrict(sc->timeouts, typeof(*sc->timeouts), sc->ntimeouts), typeof(*sc->timeouts), sc->ntimeouts + 1);
+	sc->timeouts = xrecallocarray(sc->timeouts, sc->ntimeouts,
+	    sc->ntimeouts + 1, sizeof(*sc->timeouts));
 	sc->timeouts[sc->ntimeouts].type_pattern = xstrdup(type_pattern);
 	sc->timeouts[sc->ntimeouts].timeout_secs = timeout_secs;
 	sc->ntimeouts++;
@@ -472,12 +473,13 @@ channel_new(struct ssh *ssh, char *ctype, int type, int rfd, int wfd, int efd,
 		if (sc->channels_alloc > CHANNELS_MAX_CHANNELS)
 			fatal_f("internal error: channels_alloc %d too big",
 			    sc->channels_alloc);
-		sc->channels = zrealloc(zrestrict(sc->channels, typeof(*sc->channels), sc->channels_alloc), typeof(*sc->channels), sc->channels_alloc + 10);
+		sc->channels = xrecallocarray(sc->channels, sc->channels_alloc,
+		    sc->channels_alloc + 10, sizeof(*sc->channels));
 		sc->channels_alloc += 10;
 		debug2("channel: expanding %d", sc->channels_alloc);
 	}
 	/* Initialize and return new channel. */
-	c = sc->channels[found] = zalloc(Channel, 1);
+	c = sc->channels[found] = xcalloc(1, sizeof(Channel));
 	if ((c->input = sshbuf_new()) == NULL ||
 	    (c->output = sshbuf_new()) == NULL ||
 	    (c->extended = sshbuf_new()) == NULL)
@@ -648,7 +650,7 @@ permission_set_add(struct ssh *ssh, int who, int where,
 	if (*npermp >= INT_MAX)
 		fatal_f("%s overflow", fwd_ident(who, where));
 
-	*permp = zrealloc(zrestrict(*permp, typeof(**permp), *npermp), typeof(**permp), *npermp + 1);
+	*permp = xrecallocarray(*permp, *npermp, *npermp + 1, sizeof(**permp));
 	n = (*npermp)++;
 #define MAYBE_DUP(s) ((s == NULL) ? NULL : xstrdup(s))
 	(*permp)[n].host_to_connect = MAYBE_DUP(host_to_connect);
@@ -1117,7 +1119,7 @@ channel_register_status_confirm(struct ssh *ssh, int id,
 	if ((c = channel_lookup(ssh, id)) == NULL)
 		fatal_f("%d: bad id", id);
 
-	cc = zalloc(typeof(*cc), 1);
+	cc = xcalloc(1, sizeof(*cc));
 	cc->cb = cb;
 	cc->abandon_cb = abandon_cb;
 	cc->ctx = ctx;
@@ -2495,8 +2497,8 @@ channel_handler_init(struct ssh_channels *sc)
 {
 	chan_fn **pre, **post;
 
-	if ((pre = zalloc(typeof(*pre), SSH_CHANNEL_MAX_TYPE)) == NULL ||
-	    (post = zalloc(typeof(*post), SSH_CHANNEL_MAX_TYPE)) == NULL)
+	if ((pre = calloc(SSH_CHANNEL_MAX_TYPE, sizeof(*pre))) == NULL ||
+	    (post = calloc(SSH_CHANNEL_MAX_TYPE, sizeof(*post))) == NULL)
 		fatal_f("allocation failed");
 
 	pre[SSH_CHANNEL_OPEN] =			&channel_pre_open;
@@ -2772,7 +2774,8 @@ channel_prepare_poll(struct ssh *ssh, struct pollfd **pfdp, u_int *npfd_allocp,
 		fatal_f("too many channels"); /* shouldn't happen */
 	npfd += sc->channels_alloc * 4;
 	if (npfd > *npfd_allocp) {
-		*pfdp = zrealloc(zrestrict(*pfdp, typeof(**pfdp), *npfd_allocp), typeof(**pfdp), npfd);
+		*pfdp = xrecallocarray(*pfdp, *npfd_allocp,
+		    npfd, sizeof(**pfdp));
 		*npfd_allocp = npfd;
 	}
 	*npfd_activep = npfd_reserved;
@@ -4505,7 +4508,7 @@ channel_clear_permission(struct ssh *ssh, int who, int where)
 	u_int *npermp;
 
 	permission_set_get_array(ssh, who, where, &permp, &npermp);
-	*permp = zrealloc(zrestrict(*permp, typeof(**permp), *npermp), typeof(**permp), 0);
+	*permp = xrecallocarray(*permp, *npermp, 0, sizeof(**permp));
 	*npermp = 0;
 }
 
@@ -5054,7 +5057,7 @@ x11_create_display_inet(struct ssh *ssh, int x11_display_offset,
 	}
 
 	/* Allocate a channel for each socket. */
-	*chanids = zalloc(typeof(**chanids), num_socks + 1);
+	*chanids = xcalloc(num_socks + 1, sizeof(**chanids));
 	for (n = 0; n < num_socks; n++) {
 		sock = socks[n];
 		nc = channel_new(ssh, "x11-listener",

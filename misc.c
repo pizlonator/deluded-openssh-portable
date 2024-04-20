@@ -483,7 +483,7 @@ strdelimw(char **s)
 struct passwd *
 pwcopy(struct passwd *pw)
 {
-	struct passwd *copy = zalloc(typeof(*copy), 1);
+	struct passwd *copy = xcalloc(1, sizeof(*copy));
 
 	copy->pw_name = xstrdup(pw->pw_name);
 	copy->pw_passwd = xstrdup(pw->pw_passwd == NULL ? "*" : pw->pw_passwd);
@@ -2018,7 +2018,7 @@ argv_split(const char *s, int *argcp, char ***argvp, int terminate_on_comment)
 {
 	int r = SSH_ERR_INTERNAL_ERROR;
 	int argc = 0, quote, i, j;
-	char *arg, **argv = zalloc(typeof(*argv), 1);
+	char *arg, **argv = xcalloc(1, sizeof(*argv));
 
 	*argvp = NULL;
 	*argcp = 0;
@@ -2032,7 +2032,7 @@ argv_split(const char *s, int *argcp, char ***argvp, int terminate_on_comment)
 		/* Start of a token */
 		quote = 0;
 
-		argv = zrealloc(argv, typeof(*argv), (argc + 2));
+		argv = xreallocarray(argv, (argc + 2), sizeof(*argv));
 		arg = argv[argc++] = xcalloc(1, strlen(s + i) + 1);
 		argv[argc] = NULL;
 
@@ -2627,11 +2627,12 @@ opt_array_append2(const char *file, const int line, const char *directive,
 		fatal("%s line %d: Too many %s entries", file, line, directive);
 
 	if (iarray != NULL) {
-		*iarray = zrealloc(zrestrict(*iarray, typeof(**iarray), *lp), typeof(**iarray), *lp + 1);
+		*iarray = xrecallocarray(*iarray, *lp, *lp + 1,
+		    sizeof(**iarray));
 		(*iarray)[*lp] = i;
 	}
 
-	*array = zrealloc(zrestrict(*array, typeof(**array), *lp), typeof(**array), *lp + 1);
+	*array = xrecallocarray(*array, *lp, *lp + 1, sizeof(**array));
 	(*array)[*lp] = xstrdup(s);
 	(*lp)++;
 }
@@ -2773,7 +2774,7 @@ subprocess(const char *tag, const char *command,
 		/* Prepare a minimal environment for the child. */
 		if ((flags & SSH_SUBPROCESS_PRESERVE_ENV) == 0) {
 			nenv = 5;
-			env = zalloc(typeof(*env), nenv);
+			env = xcalloc(sizeof(*env), nenv);
 			child_set_env(&env, &nenv, "PATH", _PATH_STDPATH);
 			child_set_env(&env, &nenv, "USER", pw->pw_name);
 			child_set_env(&env, &nenv, "LOGNAME", pw->pw_name);

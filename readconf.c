@@ -385,7 +385,9 @@ add_local_forward(Options *options, const struct Forward *newfwd)
 		if (forward_equals(newfwd, options->local_forwards + i))
 			return;
 	}
-	options->local_forwards = zrealloc(options->local_forwards, typeof(*options->local_forwards), options->num_local_forwards + 1);
+	options->local_forwards = xreallocarray(options->local_forwards,
+	    options->num_local_forwards + 1,
+	    sizeof(*options->local_forwards));
 	fwd = &options->local_forwards[options->num_local_forwards++];
 
 	fwd->listen_host = newfwd->listen_host;
@@ -412,7 +414,9 @@ add_remote_forward(Options *options, const struct Forward *newfwd)
 		if (forward_equals(newfwd, options->remote_forwards + i))
 			return;
 	}
-	options->remote_forwards = zrealloc(options->remote_forwards, typeof(*options->remote_forwards), options->num_remote_forwards + 1);
+	options->remote_forwards = xreallocarray(options->remote_forwards,
+	    options->num_remote_forwards + 1,
+	    sizeof(*options->remote_forwards));
 	fwd = &options->remote_forwards[options->num_remote_forwards++];
 
 	fwd->listen_host = newfwd->listen_host;
@@ -860,7 +864,9 @@ rm_env(Options *options, const char *arg, const char *filename, int linenum)
 		/* NB. don't increment i */
 	}
 	if (onum_send_env != options->num_send_env) {
-		options->send_env = zrealloc(zrestrict(options->send_env, typeof(*options->send_env), onum_send_env), typeof(*options->send_env), options->num_send_env);
+		options->send_env = xrecallocarray(options->send_env,
+		    onum_send_env, options->num_send_env,
+		    sizeof(*options->send_env));
 	}
 }
 
@@ -1599,7 +1605,8 @@ parse_pubkey_algos:
 			}
 			i++;
 			if (*activep && *uintptr == 0) {
-				*cppptr = zrealloc(zrestrict(*cppptr, typeof(**cppptr), *uintptr), typeof(**cppptr), *uintptr + 1);
+				*cppptr = xrecallocarray(*cppptr, *uintptr,
+				    *uintptr + 1, sizeof(**cppptr));
 				(*cppptr)[(*uintptr)++] = xstrdup(arg);
 			}
 		}

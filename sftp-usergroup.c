@@ -66,7 +66,7 @@ idname_enter(struct idname_tree *tree, u_int id, const char *name)
 {
 	struct idname *idname;
 
-	if ((idname = zalloc(typeof(*idname), 1)) == NULL)
+	if ((idname = xcalloc(1, sizeof(*idname))) == NULL)
 		fatal_f("alloc");
 	idname->id = id;
 	idname->name = xstrdup(name);
@@ -164,7 +164,7 @@ collect_ids_from_glob(glob_t *g, int user, u_int **idsp, u_int *nidsp)
 		}
 		if (has_id(id, ids, n))
 			continue;
-		ids = zrealloc(zrestrict(ids, typeof(*ids), n), typeof(*ids), n + 1);
+		ids = xrecallocarray(ids, n, n + 1, sizeof(*ids));
 		ids[n++] = id;
 	}
 	*idsp = ids;
@@ -203,7 +203,7 @@ collect_ids_from_dirents(SFTP_DIRENT **d, int user, u_int **idsp, u_int *nidsp)
 		}
 		if (has_id(id, ids, n))
 			continue;
-		ids = zrealloc(zrestrict(ids, typeof(*ids), n), typeof(*ids), n + 1);
+		ids = xrecallocarray(ids, n, n + 1, sizeof(*ids));
 		ids[n++] = id;
 	}
 	*idsp = ids;

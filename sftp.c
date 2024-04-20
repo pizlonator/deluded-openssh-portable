@@ -1025,7 +1025,7 @@ do_globbed_ls(struct sftp_conn *conn, const char *path,
 	 */
 	for (nentries = 0; g.gl_pathv[nentries] != NULL; nentries++)
 		;	/* count entries */
-	indices = zalloc(typeof(*indices), nentries);
+	indices = xcalloc(nentries, sizeof(*indices));
 	for (i = 0; i < nentries; i++)
 		indices[i] = i;
 
@@ -1906,7 +1906,7 @@ complete_cmd_parse(EditLine *el, char *cmd, int lastarg, char quote,
 	char *tmp, **list, argterm[3];
 	const LineInfo *lf;
 
-	list = zalloc(char *, (sizeof(cmds) / sizeof(*cmds)) + 1);
+	list = xcalloc((sizeof(cmds) / sizeof(*cmds)) + 1, sizeof(char *));
 
 	/* No command specified: display all available commands */
 	if (cmd == NULL) {

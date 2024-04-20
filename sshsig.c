@@ -640,7 +640,7 @@ sshsigopt_parse(const char *opts, const char *path, u_long linenum,
 	char *opt;
 	const char *errstr = NULL;
 
-	if ((ret = zalloc(typeof(*ret), 1)) == NULL)
+	if ((ret = calloc(1, sizeof(*ret))) == NULL)
 		return NULL;
 	if (opts == NULL || *opts == '\0')
 		return ret; /* Empty options yields empty options :) */
@@ -1104,7 +1104,8 @@ sshsig_match_principals(const char *path, const char *principal,
 			oerrno = errno;
 			break; /* unexpected error */
 		}
-		if ((tmp = zrealloc(zrestrict(principals, typeof(*principals), nprincipals), typeof(*principals), nprincipals + 1)) == NULL) {
+		if ((tmp = recallocarray(principals, nprincipals,
+		    nprincipals + 1, sizeof(*principals))) == NULL) {
 			ret = SSH_ERR_ALLOC_FAIL;
 			free(found);
 			break;

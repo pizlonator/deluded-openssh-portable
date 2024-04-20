@@ -437,7 +437,7 @@ sshsk_load_resident(const char *provider_path, const char *device,
 			error_fr(r, "decode key");
 			goto out;
 		}
-		if ((srk = zalloc(typeof(*srk), 1)) == NULL) {
+		if ((srk = calloc(1, sizeof(*srk))) == NULL) {
 			error_f("calloc failed");
 			goto out;
 		}
@@ -447,7 +447,8 @@ sshsk_load_resident(const char *provider_path, const char *device,
 		srk->user_id_len = userid_len;
 		userid = NULL;
 		userid_len = 0;
-		if ((tmp = zrealloc(zrestrict(srks, typeof(*srks), nsrks), typeof(*srks), nsrks + 1)) == NULL) {
+		if ((tmp = recallocarray(srks, nsrks, nsrks + 1,
+		    sizeof(*srks))) == NULL) {
 			error_f("recallocarray keys failed");
 			goto out;
 		}

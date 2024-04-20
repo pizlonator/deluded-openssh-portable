@@ -103,7 +103,7 @@ fetch_windows_environment(void)
 	char **e, **p;
 	unsigned int i, idx = 0;
 
-	p = zalloc(char *, WENV_SIZ + 1);
+	p = xcalloc(WENV_SIZ + 1, sizeof(char *));
 	for (e = environ; *e != NULL; ++e) {
 		for (i = 0; i < WENV_SIZ; ++i) {
 			if (!strncmp(*e, wenv_arr[i].name, wenv_arr[i].namelen))

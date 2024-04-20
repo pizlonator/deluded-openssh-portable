@@ -285,7 +285,7 @@ notify_start(int force_askpass, const char *fmt, ...)
 		/* NOTREACHED */
 	}
  out_ctx:
-	if ((ret = zalloc(typeof(*ret), 1)) == NULL) {
+	if ((ret = calloc(1, sizeof(*ret))) == NULL) {
 		if (pid != -1)
 			kill(pid, SIGTERM);
 		fatal_f("calloc failed");

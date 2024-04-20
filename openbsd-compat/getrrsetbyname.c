@@ -266,7 +266,7 @@ getrrsetbyname(const char *hostname, unsigned int rdclass,
 	}
 
 	/* initialize rrset */
-	rrset = zalloc(struct rrsetinfo, 1);
+	rrset = calloc(1, sizeof(struct rrsetinfo));
 	if (rrset == NULL) {
 		result = ERRSET_NOMEMORY;
 		goto fail;
@@ -305,7 +305,7 @@ getrrsetbyname(const char *hostname, unsigned int rdclass,
 
 	/* allocate memory for signatures */
 	if (rrset->rri_nsigs > 0) {
-		rrset->rri_sigs = zalloc(struct rdatainfo, rrset->rri_nsigs);
+		rrset->rri_sigs = calloc(rrset->rri_nsigs, sizeof(struct rdatainfo));
 		if (rrset->rri_sigs == NULL) {
 			result = ERRSET_NOMEMORY;
 			goto fail;
@@ -394,7 +394,7 @@ parse_dns_response(const u_char *answer, int size)
 		return (NULL);
 
 	/* allocate memory for the response */
-	resp = zalloc(typeof(*resp), 1);
+	resp = calloc(1, sizeof(*resp));
 	if (resp == NULL)
 		return (NULL);
 
@@ -472,7 +472,7 @@ parse_dns_qsection(const u_char *answer, int size, const u_char **cp, int count)
 			return (NULL);
 		}
 		/* allocate and initialize struct */
-		curr = zalloc(struct dns_query, 1);
+		curr = calloc(1, sizeof(struct dns_query));
 		if (curr == NULL)
 			goto fail;
 		if (head == NULL)
@@ -532,7 +532,7 @@ parse_dns_rrsection(const u_char *answer, int size, const u_char **cp,
 		}
 
 		/* allocate and initialize struct */
-		curr = zalloc(struct dns_rr, 1);
+		curr = calloc(1, sizeof(struct dns_rr));
 		if (curr == NULL)
 			goto fail;
 		if (head == NULL)

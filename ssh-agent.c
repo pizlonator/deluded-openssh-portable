@@ -218,7 +218,7 @@ close_socket(SocketEntry *e)
 static void
 idtab_init(void)
 {
-	idtab = zalloc(typeof(*idtab), 1);
+	idtab = xcalloc(1, sizeof(*idtab));
 	TAILQ_INIT(&idtab->idlist);
 	idtab->nentries = 0;
 }
@@ -262,9 +262,9 @@ dup_dest_constraint_hop(const struct dest_constraint_hop *dch,
 	out->is_ca = dch->is_ca;
 	out->nkeys = dch->nkeys;
 	out->keys = out->nkeys == 0 ? NULL :
-	    zalloc(typeof(*out->keys), out->nkeys);
+	    xcalloc(out->nkeys, sizeof(*out->keys));
 	out->key_is_ca = out->nkeys == 0 ? NULL :
-	    zalloc(typeof(*out->key_is_ca), out->nkeys);
+	    xcalloc(out->nkeys, sizeof(*out->key_is_ca));
 	for (i = 0; i < dch->nkeys; i++) {
 		if (dch->keys[i] != NULL &&
 		    (r = sshkey_from_private(dch->keys[i],
@@ -282,7 +282,7 @@ dup_dest_constraints(const struct dest_constraint *dcs, size_t ndcs)
 
 	if (ndcs == 0)
 		return NULL;
-	ret = zalloc(typeof(*ret), ndcs);
+	ret = xcalloc(ndcs, sizeof(*ret));
 	for (i = 0; i < ndcs; i++) {
 		dup_dest_constraint_hop(&dcs[i].from, &ret[i].from);
 		dup_dest_constraint_hop(&dcs[i].to, &ret[i].to);
@@ -1092,8 +1092,10 @@ parse_dest_constraint_hop(struct sshbuf *b, struct dest_constraint_hop *dch)
 		dch->user = NULL;
 	}
 	while (sshbuf_len(b) != 0) {
-		dch->keys = zrealloc(zrestrict(dch->keys, typeof(*dch->keys), dch->nkeys), typeof(*dch->keys), dch->nkeys + 1);
-		dch->key_is_ca = zrealloc(zrestrict(dch->key_is_ca, typeof(*dch->key_is_ca), dch->nkeys), typeof(*dch->key_is_ca), dch->nkeys + 1);
+		dch->keys = xrecallocarray(dch->keys, dch->nkeys,
+		    dch->nkeys + 1, sizeof(*dch->keys));
+		dch->key_is_ca = xrecallocarray(dch->key_is_ca, dch->nkeys,
+		    dch->nkeys + 1, sizeof(*dch->key_is_ca));
 		if ((r = sshkey_froms(b, &k)) != 0 ||
 		    (r = sshbuf_get_u8(b, &key_is_ca)) != 0)
 			goto out;
@@ -1213,7 +1215,8 @@ parse_key_constraint_extension(struct sshbuf *m, char **sk_providerp,
 				error_f("too many %s constraints", ext_name);
 				goto out;
 			}
-			*dcsp = zrealloc(zrestrict(*dcsp, typeof(**dcsp), *ndcsp), typeof(**dcsp), *ndcsp + 1);
+			*dcsp = xrecallocarray(*dcsp, *ndcsp, *ndcsp + 1,
+			    sizeof(**dcsp));
 			if ((r = parse_dest_constraint(b,
 			    *dcsp + (*ndcsp)++)) != 0)
 				goto out; /* error already logged */
@@ -1240,7 +1243,8 @@ parse_key_constraint_extension(struct sshbuf *m, char **sk_providerp,
 				error_f("too many %s constraints", ext_name);
 				goto out;
 			}
-			*certs = zrealloc(zrestrict(*certs, typeof(**certs), *ncerts), typeof(**certs), *ncerts + 1);
+			*certs = xrecallocarray(*certs, *ncerts, *ncerts + 1,
+			    sizeof(**certs));
 			if ((r = sshkey_froms(b, &k)) != 0) {
 				error_fr(r, "parse key");
 				goto out;
@@ -1403,7 +1407,7 @@ process_add_identity(SocketEntry *e)
 	if (lifetime && !death)
 		death = monotime() + lifetime;
 	if ((id = lookup_identity(k)) == NULL) {
-		id = zalloc(Identity, 1);
+		id = xcalloc(1, sizeof(Identity));
 		TAILQ_INSERT_TAIL(&idtab->idlist, id, next);
 		/* Increment the number of identities. */
 		idtab->nentries++;
@@ -1531,7 +1535,7 @@ add_p11_identity(struct sshkey *key, char *comment, const char *provider,
 		free(comment);
 		return;
 	}
-	id = zalloc(Identity, 1);
+	id = xcalloc(1, sizeof(Identity));
 	id->key = key;
 	id->comment = comment;
 	id->provider = xstrdup(provider);
@@ -1735,7 +1739,8 @@ process_ext_session_bind(SocketEntry *e)
 		error_f("too many session IDs recorded");
 		goto out;
 	}
-	e->session_ids = zrealloc(zrestrict(e->session_ids, typeof(*e->session_ids), e->nsession_ids), typeof(*e->session_ids), e->nsession_ids + 1);
+	e->session_ids = xrecallocarray(e->session_ids, e->nsession_ids,
+	    e->nsession_ids + 1, sizeof(*e->session_ids));
 	i = e->nsession_ids++;
 	debug_f("recorded %s %s (slot %zu of %d)", sshkey_type(key), fp, i,
 	    AGENT_MAX_SESSION_IDS);
@@ -2077,7 +2082,7 @@ prepare_poll(struct pollfd **pfdp, size_t *npfdp, int *timeoutp, u_int maxfds)
 		}
 	}
 	if (npfd != *npfdp &&
-	    (pfd = zrealloc(zrestrict(pfd, typeof(*pfd), *npfdp), typeof(*pfd), npfd)) == NULL)
+	    (pfd = recallocarray(pfd, *npfdp, npfd, sizeof(*pfd))) == NULL)
 		fatal_f("recallocarray failed");
 	*pfdp = pfd;
 	*npfdp = npfd;

@@ -625,7 +625,8 @@ auth2_setup_methods_lists(Authctxt *authctxt)
 	if (options.num_auth_methods == 0)
 		return 0;
 	debug3_f("checking methods");
-	authctxt->auth_methods = zalloc(typeof(*authctxt->auth_methods), options.num_auth_methods);
+	authctxt->auth_methods = xcalloc(options.num_auth_methods,
+	    sizeof(*authctxt->auth_methods));
 	authctxt->num_auth_methods = 0;
 	for (i = 0; i < options.num_auth_methods; i++) {
 		if (auth2_methods_valid(options.auth_methods[i], 1) != 0) {
@@ -781,7 +782,8 @@ auth2_record_key(Authctxt *authctxt, int authenticated,
 	if ((r = sshkey_from_private(key, &dup)) != 0)
 		fatal_fr(r, "copy key");
 	if (authctxt->nprev_keys >= INT_MAX ||
-	    (tmp = zrealloc(zrestrict(authctxt->prev_keys, typeof(*authctxt->prev_keys), authctxt->nprev_keys), typeof(*authctxt->prev_keys), authctxt->nprev_keys + 1)) == NULL)
+	    (tmp = recallocarray(authctxt->prev_keys, authctxt->nprev_keys,
+	    authctxt->nprev_keys + 1, sizeof(*authctxt->prev_keys))) == NULL)
 		fatal_f("reallocarray failed");
 	authctxt->prev_keys = tmp;
 	authctxt->prev_keys[authctxt->nprev_keys] = dup;

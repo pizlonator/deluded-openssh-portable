@@ -16,16 +16,6 @@
  * called by a name other than "ssh" or "Secure Shell".
  */
 
-/* Deluge provides allocation APIs that have almost strictly stronger guarantees,
-   except: Deluge's zalloc will not fail if asked to allocate zero bytes. What it
-   will do in that case is return a pointer that knows that it points to zero
-   bytes. So, any attempt to access the pointer will crash. I think that's probably
-   good enough.
-   
-   But it's interesting to me that the SSH folks (and presumably the OpenBSD
-   folks?) think it's best to crash on zero bytes. I wonder if they would think my
-   solution of returning an inaccessible pointer is good enough for their tastes. */
-
 void	*xmalloc(size_t);
 void	*xcalloc(size_t, size_t);
 void	*xreallocarray(void *, size_t, size_t);

@@ -284,7 +284,7 @@ mm_getpwnamallow(struct ssh *ssh, const char *username)
 	}
 
 	/* XXX don't like passing struct passwd like this */
-	pw = zalloc(typeof(*pw), 1);
+	pw = xcalloc(sizeof(*pw), 1);
 	GETPW(m, pw_uid);
 	GETPW(m, pw_gid);
 #ifdef HAVE_STRUCT_PASSWD_PW_CHANGE
@@ -311,8 +311,8 @@ out:
 		fatal_fr(r, "parse opts");
 	if (len != sizeof(*newopts))
 		fatal_f("option block size mismatch");
-	newopts = zalloc(typeof(*newopts), 1);
-	zmemmove_nullify(newopts, p, sizeof(*newopts));
+	newopts = xcalloc(sizeof(*newopts), 1);
+	memcpy(newopts, p, sizeof(*newopts));
 
 #define M_CP_STROPT(x) do { \
 		if (newopts->x != NULL && \
@@ -321,7 +321,7 @@ out:
 	} while (0)
 #define M_CP_STRARRAYOPT(x, nx) do { \
 		newopts->x = newopts->nx == 0 ? \
-		    NULL : zalloc(typeof(*newopts->x), newopts->nx); \
+		    NULL : xcalloc(newopts->nx, sizeof(*newopts->x)); \
 		for (i = 0; i < newopts->nx; i++) { \
 			if ((r = sshbuf_get_cstring(m, \
 			    &newopts->x[i], NULL)) != 0) \
@@ -536,7 +536,7 @@ mm_sshkey_verify(const struct sshkey *key, const u_char *sig, size_t siglen,
 		    (r = sshbuf_get_u8(m, &flags)) != 0)
 			fatal_fr(r, "parse sig_details");
 		if (sig_detailsp != NULL) {
-			*sig_detailsp = zalloc(typeof(**sig_detailsp), 1);
+			*sig_detailsp = xcalloc(1, sizeof(**sig_detailsp));
 			(*sig_detailsp)->sk_counter = counter;
 			(*sig_detailsp)->sk_flags = flags;
 		}
@@ -737,8 +737,8 @@ mm_sshpam_query(void *ctx, char **name, char **info,
 	if (*num > PAM_MAX_NUM_MSG)
 		fatal("%s: received %u PAM messages, expected <= %u",
 		    __func__, *num, PAM_MAX_NUM_MSG);
-	*prompts = zalloc(char *, (*num + 1));
-	*echo_on = zalloc(u_int, (*num + 1));
+	*prompts = xcalloc((*num + 1), sizeof(char *));
+	*echo_on = xcalloc((*num + 1), sizeof(u_int));
 	for (i = 0; i < *num; ++i) {
 		if ((r = sshbuf_get_cstring(m, &((*prompts)[i]), NULL)) != 0 ||
 		    (r = sshbuf_get_u32(m, &((*echo_on)[i]))) != 0)
@@ -812,8 +812,8 @@ mm_chall_setup(char **name, char **infotxt, u_int *numprompts,
 	*name = xstrdup("");
 	*infotxt = xstrdup("");
 	*numprompts = 1;
-	*prompts = zalloc(char *, *numprompts);
-	*echo_on = zalloc(u_int, *numprompts);
+	*prompts = xcalloc(*numprompts, sizeof(char *));
+	*echo_on = xcalloc(*numprompts, sizeof(u_int));
 	(*echo_on)[0] = 0;
 }
 

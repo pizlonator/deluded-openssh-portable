@@ -143,7 +143,8 @@ helper_free(struct helper *helper)
 			helpers[i - 1] = helpers[i];
 	}
 	if (found) {
-		helpers = zrealloc(zrestrict(helpers, typeof(*helpers), nhelpers), typeof(*helpers), nhelpers - 1);
+		helpers = xrecallocarray(helpers, nhelpers,
+		    nhelpers - 1, sizeof(*helpers));
 		nhelpers--;
 	}
 	free(helper->path);
@@ -531,7 +532,7 @@ pkcs11_start_helper(const char *path)
 		error_f("socketpair: %s", strerror(errno));
 		return NULL;
 	}
-	helper = zalloc(typeof(*helper), 1);
+	helper = xcalloc(1, sizeof(*helper));
 	if (pkcs11_start_helper_methods(helper) == -1) {
 		error_f("pkcs11_start_helper_methods failed");
 		goto fail;
@@ -572,7 +573,8 @@ pkcs11_start_helper(const char *path)
 	helper->pid = pid;
 	debug3_f("helper %zu for \"%s\" on fd %d pid %ld", nhelpers,
 	    helper->path, helper->fd, (long)helper->pid);
-	helpers = zrealloc(zrestrict(helpers, typeof(*helpers), nhelpers), typeof(*helpers), nhelpers + 1);
+	helpers = xrecallocarray(helpers, nhelpers,
+	    nhelpers + 1, sizeof(*helpers));
 	helpers[nhelpers++] = helper;
 	return helper;
 }
@@ -607,9 +609,9 @@ pkcs11_add_provider(char *name, char *pin, struct sshkey ***keysp,
 	if (type == SSH2_AGENT_IDENTITIES_ANSWER) {
 		if ((r = sshbuf_get_u32(msg, &nkeys)) != 0)
 			fatal_fr(r, "parse nkeys");
-		*keysp = zalloc(struct sshkey *, nkeys);
+		*keysp = xcalloc(nkeys, sizeof(struct sshkey *));
 		if (labelsp)
-			*labelsp = zalloc(char *, nkeys);
+			*labelsp = xcalloc(nkeys, sizeof(char *));
 		for (i = 0; i < nkeys; i++) {
 			/* XXX clean up properly instead of fatal() */
 			if ((r = sshbuf_get_string(msg, &blob, &blen)) != 0 ||

@@ -843,8 +843,8 @@ main(int argc, char **argv)
 		fatal("%s: not enough file descriptors", __progname);
 	if (maxfd > fdlim_get(0))
 		fdlim_set(maxfd);
-	fdcon = zalloc(con, maxfd);
-	read_wait = zalloc(struct pollfd, maxfd);
+	fdcon = xcalloc(maxfd, sizeof(con));
+	read_wait = xcalloc(maxfd, sizeof(struct pollfd));
 	for (j = 0; j < maxfd; j++)
 		read_wait[j].fd = -1;
 

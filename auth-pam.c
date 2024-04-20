@@ -355,7 +355,7 @@ import_environments(struct sshbuf *b)
 		fatal_f("received %u environment variables, expected <= 1024",
 		    num_env);
 	}
-	sshpam_env = zalloc(typeof(*sshpam_env), num_env + 1);
+	sshpam_env = xcalloc(num_env + 1, sizeof(*sshpam_env));
 	debug3("PAM: num env strings %u", num_env);
 	for(i = 0; i < num_env; i++) {
 		if ((r = sshbuf_get_cstring(b, &(sshpam_env[i]), NULL)) != 0)
@@ -412,7 +412,7 @@ sshpam_thread_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG)
 		return (PAM_CONV_ERR);
 
-	if ((reply = zalloc(typeof(*reply), n)) == NULL)
+	if ((reply = calloc(n, sizeof(*reply))) == NULL)
 		return PAM_CONV_ERR;
 	if ((buffer = sshbuf_new()) == NULL) {
 		free(reply);
@@ -635,7 +635,7 @@ sshpam_store_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG)
 		return (PAM_CONV_ERR);
 
-	if ((reply = zalloc(typeof(*reply), n)) == NULL)
+	if ((reply = calloc(n, sizeof(*reply))) == NULL)
 		return (PAM_CONV_ERR);
 
 	for (i = 0; i < n; ++i) {
@@ -1142,7 +1142,7 @@ sshpam_tty_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG || !isatty(STDIN_FILENO))
 		return (PAM_CONV_ERR);
 
-	if ((reply = zalloc(typeof(*reply), n)) == NULL)
+	if ((reply = calloc(n, sizeof(*reply))) == NULL)
 		return (PAM_CONV_ERR);
 
 	for (i = 0; i < n; ++i) {
@@ -1301,7 +1301,7 @@ sshpam_passwd_conv(int n, sshpam_const struct pam_message **msg,
 	if (n <= 0 || n > PAM_MAX_NUM_MSG)
 		return (PAM_CONV_ERR);
 
-	if ((reply = zalloc(typeof(*reply), n)) == NULL)
+	if ((reply = calloc(n, sizeof(*reply))) == NULL)
 		return (PAM_CONV_ERR);
 
 	for (i = 0; i < n; ++i) {

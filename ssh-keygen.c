@@ -1613,7 +1613,7 @@ do_change_comment(struct passwd *pw, const char *identity_comment)
 static void
 cert_ext_add(const char *key, const char *value, int iscrit)
 {
-	cert_ext = zrealloc(cert_ext, typeof(*cert_ext), ncert_ext + 1);
+	cert_ext = xreallocarray(cert_ext, ncert_ext + 1, sizeof(*cert_ext));
 	cert_ext[ncert_ext].key = xstrdup(key);
 	cert_ext[ncert_ext].val = value == NULL ? NULL : xstrdup(value);
 	cert_ext[ncert_ext].crit = iscrit;
@@ -1823,7 +1823,7 @@ do_ca_sign(struct passwd *pw, const char *ca_key_path, int prefer_agent,
 			otmp = tmp = xstrdup(cert_principals);
 			plist = NULL;
 			for (; (cp = strsep(&tmp, ",")) != NULL; n++) {
-				plist = zrealloc(plist, typeof(*plist), n + 1);
+				plist = xreallocarray(plist, n + 1, sizeof(*plist));
 				if (*(plist[n] = xstrdup(cp)) == '\0')
 					fatal("Empty principal name");
 			}
@@ -3466,7 +3466,8 @@ main(int argc, char **argv)
 			check_krl = 1;
 			break;
 		case 'O':
-			opts = zrealloc(zrestrict(opts, typeof(*opts), nopts), typeof(*opts), nopts + 1);
+			opts = xrecallocarray(opts, nopts, nopts + 1,
+			    sizeof(*opts));
 			opts[nopts++] = xstrdup(optarg);
 			break;
 		case 'Z':

@@ -574,7 +574,7 @@ glob0(const Char *pattern, glob_t *pglob, struct glob_lim *limitp)
 			size_t n = pglob->gl_pathc - oldpathc;
 			size_t o = pglob->gl_offs + oldpathc;
 
-			if ((path_stat = zalloc(typeof(*path_stat), n)) == NULL)
+			if ((path_stat = calloc(n, sizeof(*path_stat))) == NULL)
 				return GLOB_NOSPACE;
 			for (i = 0; i < n; i++) {
 				path_stat[i].gps_path = pglob->gl_pathv[o + i];
@@ -827,7 +827,7 @@ globextend(const Char *path, glob_t *pglob, struct glob_lim *limitp,
 		return(GLOB_NOSPACE);
 	}
 
-	pathv = zrealloc(pglob->gl_pathv, typeof(*pathv), newn);
+	pathv = reallocarray(pglob->gl_pathv, newn, sizeof(*pathv));
 	if (pathv == NULL)
 		goto nospace;
 	if (pglob->gl_pathv == NULL && pglob->gl_offs > 0) {
@@ -839,7 +839,7 @@ globextend(const Char *path, glob_t *pglob, struct glob_lim *limitp,
 	pglob->gl_pathv = pathv;
 
 	if ((pglob->gl_flags & GLOB_KEEPSTAT) != 0) {
-		statv = zrealloc(pglob->gl_statv, typeof(*statv), newn);
+		statv = reallocarray(pglob->gl_statv, newn, sizeof(*statv));
 		if (statv == NULL)
 			goto nospace;
 		if (pglob->gl_statv == NULL && pglob->gl_offs > 0) {

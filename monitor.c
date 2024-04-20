@@ -1104,7 +1104,7 @@ mm_answer_pam_respond(struct ssh *ssh, int sock, struct sshbuf *m)
 		    num, (unsigned)PAM_MAX_NUM_MSG);
 	}
 	if (num > 0) {
-		resp = zalloc(char *, num);
+		resp = xcalloc(num, sizeof(char *));
 		for (i = 0; i < num; ++i) {
 			if ((r = sshbuf_get_cstring(m, &(resp[i]), NULL)) != 0)
 				fatal("%s: buffer error: %s",
@@ -1815,7 +1815,7 @@ monitor_init(void)
 {
 	struct monitor *mon;
 
-	mon = zalloc(typeof(*mon), 1);
+	mon = xcalloc(1, sizeof(*mon));
 	monitor_openfds(mon, 1);
 
 	return mon;

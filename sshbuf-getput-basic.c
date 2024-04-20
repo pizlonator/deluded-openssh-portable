@@ -28,6 +28,8 @@
 # include <stdint.h>
 #endif
 
+#include <stdfil.h>
+
 #include "ssherr.h"
 #include "sshbuf.h"
 

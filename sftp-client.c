@@ -129,7 +129,7 @@ request_enqueue(struct requests *requests, u_int id, size_t len,
 {
 	struct request *req;
 
-	req = zalloc(typeof(*req), 1);
+	req = xcalloc(1, sizeof(*req));
 	req->id = id;
 	req->len = len;
 	req->offset = offset;
@@ -461,7 +461,7 @@ sftp_init(int fd_in, int fd_out, u_int transfer_buflen, u_int num_requests,
 	struct sftp_conn *ret;
 	int r;
 
-	ret = zalloc(typeof(*ret), 1);
+	ret = xcalloc(1, sizeof(*ret));
 	ret->msg_id = 1;
 	ret->fd_in = fd_in;
 	ret->fd_out = fd_out;
@@ -732,7 +732,7 @@ sftp_lsreaddir(struct sftp_conn *conn, const char *path, int print_flag,
 
 	if (dir) {
 		ents = 0;
-		*dir = zalloc(typeof(**dir), 1);
+		*dir = xcalloc(1, sizeof(**dir));
 		(*dir)[0] = NULL;
 	}
 
@@ -810,8 +810,8 @@ sftp_lsreaddir(struct sftp_conn *conn, const char *path, int print_flag,
 				error("Server sent suspect path \"%s\" "
 				    "during readdir of \"%s\"", filename, path);
 			} else if (dir) {
-				*dir = zrealloc(*dir, typeof(**dir), ents + 2);
-				(*dir)[ents] = zalloc(typeof(***dir), 1);
+				*dir = xreallocarray(*dir, ents + 2, sizeof(**dir));
+				(*dir)[ents] = xcalloc(1, sizeof(***dir));
 				(*dir)[ents]->filename = xstrdup(filename);
 				(*dir)[ents]->longname = xstrdup(longname);
 				memcpy(&(*dir)[ents]->a, &a, sizeof(a));
@@ -835,7 +835,7 @@ sftp_lsreaddir(struct sftp_conn *conn, const char *path, int print_flag,
 	} else if (interrupted && dir != NULL && *dir != NULL) {
 		/* Don't return partial matches on interrupt */
 		sftp_free_dirents(*dir);
-		*dir = zalloc(typeof(**dir), 1);
+		*dir = xcalloc(1, sizeof(**dir));
 		**dir = NULL;
 	}
 
@@ -2913,7 +2913,7 @@ sftp_get_users_groups_by_id(struct sftp_conn *conn,
 	    (r = sshbuf_froms(msg, &gidbuf)) != 0)
 		fatal_fr(r, "parse response");
 	if (nuids > 0) {
-		usernames = zalloc(typeof(*usernames), nuids);
+		usernames = xcalloc(nuids, sizeof(*usernames));
 		for (i = 0; i < nuids; i++) {
 			if ((r = sshbuf_get_cstring(uidbuf, &name, NULL)) != 0)
 				fatal_fr(r, "parse user name");
@@ -2926,7 +2926,7 @@ sftp_get_users_groups_by_id(struct sftp_conn *conn,
 		}
 	}
 	if (ngids > 0) {
-		groupnames = zalloc(typeof(*groupnames), ngids);
+		groupnames = xcalloc(ngids, sizeof(*groupnames));
 		for (i = 0; i < ngids; i++) {
 			if ((r = sshbuf_get_cstring(gidbuf, &name, NULL)) != 0)
 				fatal_fr(r, "parse user name");

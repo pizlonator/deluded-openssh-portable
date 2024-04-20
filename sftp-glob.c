@@ -49,7 +49,7 @@ fudge_opendir(const char *path)
 {
 	struct SFTP_OPENDIR *r;
 
-	r = zalloc(typeof(*r), 1);
+	r = xcalloc(1, sizeof(*r));
 
 	if (sftp_readdir(cur.conn, path, &r->dir)) {
 		free(r);

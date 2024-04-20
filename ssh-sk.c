@@ -113,7 +113,7 @@ sshsk_open(const char *path)
 		error("No FIDO SecurityKeyProvider specified");
 		return NULL;
 	}
-	if ((ret = zalloc(typeof(*ret), 1)) == NULL) {
+	if ((ret = calloc(1, sizeof(*ret))) == NULL) {
 		error_f("calloc failed");
 		return NULL;
 	}
@@ -393,7 +393,7 @@ sshsk_add_option(struct sk_option ***optsp, size_t *noptsp,
 	}
 	*optsp = opts;
 	*noptsp = nopts + 1;
-	if ((opts[nopts] = zalloc(typeof(**opts), 1)) == NULL) {
+	if ((opts[nopts] = calloc(1, sizeof(**opts))) == NULL) {
 		error_f("alloc failed");
 		return SSH_ERR_ALLOC_FAIL;
 	}
@@ -835,7 +835,7 @@ sshsk_load_resident(const char *provider_path, const char *device,
 		if ((r = sshsk_key_from_response(rks[i]->alg,
 		    rks[i]->application, sk_flags, &rks[i]->key, &key)) != 0)
 			goto out;
-		if ((srk = zalloc(typeof(*srk), 1)) == NULL) {
+		if ((srk = calloc(1, sizeof(*srk))) == NULL) {
 			error_f("calloc failed");
 			r = SSH_ERR_ALLOC_FAIL;
 			goto out;
@@ -849,7 +849,8 @@ sshsk_load_resident(const char *provider_path, const char *device,
 		}
 		memcpy(srk->user_id, rks[i]->user_id, rks[i]->user_id_len);
 		srk->user_id_len = rks[i]->user_id_len;
-		if ((tmp = zrealloc(zrestrict(srks, typeof(*tmp), nsrks), typeof(*tmp), nsrks + 1)) == NULL) {
+		if ((tmp = recallocarray(srks, nsrks, nsrks + 1,
+		    sizeof(*tmp))) == NULL) {
 			error_f("recallocarray failed");
 			r = SSH_ERR_ALLOC_FAIL;
 			goto out;

@@ -22,8 +22,6 @@
 #define _GNU_SOURCE /* activate extra prototypes for glibc */
 #endif
 
-#include <stdfil.h>
-
 #include <sys/types.h>
 #include <sys/socket.h> /* For CMSG_* */
 

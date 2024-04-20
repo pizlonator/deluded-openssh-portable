@@ -884,7 +884,7 @@ void
 client_expect_confirm(struct ssh *ssh, int id, const char *request,
     enum confirm_action action)
 {
-	struct channel_reply_ctx *cr = zalloc(typeof(*cr), 1);
+	struct channel_reply_ctx *cr = xcalloc(1, sizeof(*cr));
 
 	cr->request_type = request;
 	cr->action = action;
@@ -907,7 +907,7 @@ client_register_global_confirm(global_confirm_cb *cb, void *ctx)
 		return;
 	}
 
-	gc = zalloc(typeof(*gc), 1);
+	gc = xcalloc(1, sizeof(*gc));
 	gc->cb = cb;
 	gc->ctx = ctx;
 	gc->ref_count = 1;
@@ -1402,7 +1402,7 @@ client_new_escape_filter_ctx(int escape_char)
 {
 	struct escape_filter_ctx *ret;
 
-	ret = zalloc(typeof(*ret), 1);
+	ret = xcalloc(1, sizeof(*ret));
 	ret->escape_pending = 0;
 	ret->escape_char = escape_char;
 	return (void *)ret;
@@ -2172,7 +2172,8 @@ hostkeys_find(struct hostkey_foreach_line *l, void *_ctx)
 	/* This line contained a key that not offered by the server */
 	debug3_f("deprecated %s key at %s:%ld", sshkey_ssh_name(l->key),
 	    l->path, l->linenum);
-	if ((tmp = zrealloc(zrestrict(ctx->old_keys, typeof(*ctx->old_keys), ctx->nold), typeof(*ctx->old_keys), ctx->nold + 1)) == NULL)
+	if ((tmp = recallocarray(ctx->old_keys, ctx->nold, ctx->nold + 1,
+	    sizeof(*ctx->old_keys))) == NULL)
 		fatal_f("recallocarray failed nold = %zu", ctx->nold);
 	ctx->old_keys = tmp;
 	ctx->old_keys[ctx->nold++] = l->key;
@@ -2484,7 +2485,7 @@ client_input_hostkeys(struct ssh *ssh)
 		return 1;
 	hostkeys_seen = 1;
 
-	ctx = zalloc(typeof(*ctx), 1);
+	ctx = xcalloc(1, sizeof(*ctx));
 	while (ssh_packet_remaining(ssh) > 0) {
 		sshkey_free(key);
 		key = NULL;
@@ -2523,7 +2524,8 @@ client_input_hostkeys(struct ssh *ssh)
 			}
 		}
 		/* Key is good, record it */
-		if ((tmp = zrealloc(zrestrict(ctx->keys, typeof(*ctx->keys), ctx->nkeys), typeof(*ctx->keys), ctx->nkeys + 1)) == NULL)
+		if ((tmp = recallocarray(ctx->keys, ctx->nkeys, ctx->nkeys + 1,
+		    sizeof(*ctx->keys))) == NULL)
 			fatal_f("recallocarray failed nkeys = %zu",
 			    ctx->nkeys);
 		ctx->keys = tmp;

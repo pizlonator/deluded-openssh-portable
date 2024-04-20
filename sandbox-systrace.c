@@ -102,7 +102,7 @@ ssh_sandbox_init(struct monitor *monitor)
 	struct ssh_sandbox *box;
 
 	debug3("%s: preparing systrace sandbox", __func__);
-	box = zalloc(typeof(*box), 1);
+	box = xcalloc(1, sizeof(*box));
 	box->systrace_fd = -1;
 	box->child_pid = 0;
 	box->osigchld = ssh_signal(SIGCHLD, SIG_IGN);

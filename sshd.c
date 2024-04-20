@@ -972,7 +972,7 @@ recv_rexec_state(int fd, struct sshbuf *conf)
 		fatal_fr(r, "sshbuf_put");
 
 	while (sshbuf_len(inc) != 0) {
-		item = zalloc(typeof(*item), 1);
+		item = xcalloc(1, sizeof(*item));
 		if ((item->contents = sshbuf_new()) == NULL)
 			fatal_f("sshbuf_new failed");
 		if ((r = sshbuf_get_cstring(inc, &item->selector, NULL)) != 0 ||
@@ -1127,9 +1127,9 @@ server_accept_loop(int *sock_in, int *sock_out, int *newsock, int *config_s)
 	sigset_t nsigset, osigset;
 
 	/* pipes connected to unauthenticated child sshd processes */
-	startup_pipes = zalloc(int, options.max_startups);
-	startup_flags = zalloc(int, options.max_startups);
-	startup_pollfd = zalloc(int, options.max_startups);
+	startup_pipes = xcalloc(options.max_startups, sizeof(int));
+	startup_flags = xcalloc(options.max_startups, sizeof(int));
+	startup_pollfd = xcalloc(options.max_startups, sizeof(int));
 	for (i = 0; i < options.max_startups; i++)
 		startup_pipes[i] = -1;
 
@@ -1146,7 +1146,8 @@ server_accept_loop(int *sock_in, int *sock_out, int *newsock, int *config_s)
 	sigaddset(&nsigset, SIGQUIT);
 
 	/* sized for worst-case */
-	pfd = zalloc(typeof(struct pollfd), num_listen_socks + options.max_startups);
+	pfd = xcalloc(num_listen_socks + options.max_startups,
+	    sizeof(struct pollfd));
 
 	/*
 	 * Stay listening for connections until the system crashes or
@@ -1568,7 +1569,7 @@ main(int ac, char **av)
 	/* Save argv. Duplicate so setproctitle emulation doesn't clobber it */
 	saved_argc = ac;
 	rexec_argc = ac;
-	saved_argv = zalloc(typeof(*saved_argv), ac + 1);
+	saved_argv = xcalloc(ac + 1, sizeof(*saved_argv));
 	for (i = 0; (int)i < ac; i++)
 		saved_argv[i] = xstrdup(av[i]);
 	saved_argv[i] = NULL;
@@ -1828,8 +1829,10 @@ main(int ac, char **av)
 	endpwent();
 
 	/* load host keys */
-	sensitive_data.host_keys = zalloc(typeof(struct sshkey *), options.num_host_key_files);
-	sensitive_data.host_pubkeys = zalloc(typeof(struct sshkey *), options.num_host_key_files);
+	sensitive_data.host_keys = xcalloc(options.num_host_key_files,
+	    sizeof(struct sshkey *));
+	sensitive_data.host_pubkeys = xcalloc(options.num_host_key_files,
+	    sizeof(struct sshkey *));
 
 	if (options.host_key_agent) {
 		if (strcmp(options.host_key_agent, SSH_AUTHSOCKET_ENV_NAME))
@@ -1936,7 +1939,8 @@ main(int ac, char **av)
 	 * Load certificates. They are stored in an array at identical
 	 * indices to the public keys that they relate to.
 	 */
-	sensitive_data.host_certificates = zalloc(typeof(struct sshkey *), options.num_host_key_files);
+	sensitive_data.host_certificates = xcalloc(options.num_host_key_files,
+	    sizeof(struct sshkey *));
 	for (i = 0; i < options.num_host_key_files; i++)
 		sensitive_data.host_certificates[i] = NULL;
 
@@ -2013,7 +2017,7 @@ main(int ac, char **av)
 	if (rexec_flag) {
 		if (rexec_argc < 0)
 			fatal("rexec_argc %d < 0", rexec_argc);
-		rexec_argv = zalloc(char *, rexec_argc + 2);
+		rexec_argv = xcalloc(rexec_argc + 2, sizeof(char *));
 		for (i = 0; i < (u_int)rexec_argc; i++) {
 			debug("rexec_argv[%d]='%s'", i, saved_argv[i]);
 			rexec_argv[i] = saved_argv[i];
@@ -2226,7 +2230,7 @@ main(int ac, char **av)
 	ssh_packet_set_nonblocking(ssh);
 
 	/* allocate authentication context */
-	authctxt = zalloc(typeof(*authctxt), 1);
+	authctxt = xcalloc(1, sizeof(*authctxt));
 	ssh->authctxt = authctxt;
 
 	authctxt->loginmsg = loginmsg;

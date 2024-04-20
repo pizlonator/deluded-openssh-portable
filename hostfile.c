@@ -215,7 +215,7 @@ check_markers(char **cpp)
 struct hostkeys *
 init_hostkeys(void)
 {
-	struct hostkeys *ret = zalloc(typeof(*ret), 1);
+	struct hostkeys *ret = xcalloc(1, sizeof(*ret));
 
 	ret->entries = NULL;
 	return ret;
@@ -245,7 +245,8 @@ record_hostkey(struct hostkey_foreach_line *l, void *_ctx)
 	    l->marker == MRK_NONE ? "" :
 	    (l->marker == MRK_CA ? "ca " : "revoked "),
 	    sshkey_type(l->key), l->path, l->linenum);
-	if ((tmp = zrealloc(zrestrict(hostkeys->entries, typeof(*hostkeys->entries), hostkeys->num_entries), typeof(*hostkeys->entries), hostkeys->num_entries + 1)) == NULL)
+	if ((tmp = recallocarray(hostkeys->entries, hostkeys->num_entries,
+	    hostkeys->num_entries + 1, sizeof(*hostkeys->entries))) == NULL)
 		return SSH_ERR_ALLOC_FAIL;
 	hostkeys->entries = tmp;
 	hostkeys->entries[hostkeys->num_entries].host = xstrdup(ctx->host);

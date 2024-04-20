@@ -586,7 +586,7 @@ cert_new(void)
 {
 	struct sshkey_cert *cert;
 
-	if ((cert = zalloc(typeof(*cert), 1)) == NULL)
+	if ((cert = calloc(1, sizeof(*cert))) == NULL)
 		return NULL;
 	if ((cert->certblob = sshbuf_new()) == NULL ||
 	    (cert->critical = sshbuf_new()) == NULL ||
@@ -612,7 +612,7 @@ sshkey_new(int type)
 		return NULL;
 
 	/* All non-certificate types may act as CAs */
-	if ((k = zalloc(typeof(*k), 1)) == NULL)
+	if ((k = calloc(1, sizeof(*k))) == NULL)
 		return NULL;
 	k->type = type;
 	k->ecdsa_nid = -1;
@@ -1812,7 +1812,9 @@ cert_parse(struct sshbuf *b, struct sshkey *key, struct sshbuf *certbuf)
 			goto out;
 		}
 		oprincipals = key->cert->principals;
-		key->cert->principals = zrealloc(zrestrict(key->cert->principals, typeof(*key->cert->principals), key->cert->nprincipals), typeof(*key->cert->principals), key->cert->nprincipals + 1);
+		key->cert->principals = recallocarray(key->cert->principals,
+		    key->cert->nprincipals, key->cert->nprincipals + 1,
+		    sizeof(*key->cert->principals));
 		if (key->cert->principals == NULL) {
 			free(principal);
 			key->cert->principals = oprincipals;

@@ -415,7 +415,7 @@ sshkey_tests(void)
 	k1->cert->serial = 1234;
 	k1->cert->key_id = strdup("estragon");
 	ASSERT_PTR_NE(k1->cert->key_id, NULL);
-	k1->cert->principals = zalloc(typeof(*k1->cert->principals), 4);
+	k1->cert->principals = calloc(4, sizeof(*k1->cert->principals));
 	ASSERT_PTR_NE(k1->cert->principals, NULL);
 	k1->cert->principals[0] = strdup("estragon");
 	k1->cert->principals[1] = strdup("vladimir");

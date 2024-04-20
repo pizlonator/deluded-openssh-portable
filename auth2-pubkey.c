@@ -700,7 +700,7 @@ user_key_command_allowed2(struct passwd *user_pw, struct sshkey *key,
 	 * target username as a single argument.
 	 */
 	if (ac == 1) {
-		av = zrealloc(av, typeof(*av), ac + 2);
+		av = xreallocarray(av, ac + 2, sizeof(*av));
 		av[1] = xstrdup(user_pw->pw_name);
 		av[2] = NULL;
 		/* Fix up command too, since it is used in log messages */
