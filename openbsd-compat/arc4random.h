@@ -63,7 +63,7 @@ _rs_forkdetect(void)
 static inline int
 _rs_allocate(struct _rs **rsp, struct _rsx **rsxp)
 {
-#if defined(MAP_ANON) && defined(MAP_PRIVATE) && !defined(__PIZLONATOR_WAS_HERE__)
+#if defined(MAP_ANON) && defined(MAP_PRIVATE)
 	if ((*rsp = mmap(NULL, sizeof(**rsp), PROT_READ|PROT_WRITE,
 	    MAP_ANON|MAP_PRIVATE, -1, 0)) == MAP_FAILED)
 		return (-1);
