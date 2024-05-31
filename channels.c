@@ -5103,7 +5103,7 @@ connect_local_xsocket(u_int dnr)
 	return connect_local_xsocket_path(buf);
 }
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__PIZLONATED_APPLE__)
 static int
 is_path_to_xsocket(const char *display, char *path, size_t pathlen)
 {
@@ -5151,7 +5151,7 @@ x11_connect_display(struct ssh *ssh)
 	 * connection to the real X server.
 	 */
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__PIZLONATED_APPLE__)
 	/* Check if display is a path to a socket (as set by launchd). */
 	{
 		char path[PATH_MAX];
