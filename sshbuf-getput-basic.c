@@ -28,8 +28,6 @@
 # include <stdint.h>
 #endif
 
-#include <stdfil.h>
-
 #include "ssherr.h"
 #include "sshbuf.h"
 
@@ -526,7 +524,7 @@ sshbuf_put_string(struct sshbuf *buf, const void *v, size_t len)
 		return r;
 	POKE_U32(d, len);
 	if (len != 0)
-		zmemmove_nullify(d + 4, v, len);
+		memcpy(d + 4, v, len);
 	return 0;
 }
 
